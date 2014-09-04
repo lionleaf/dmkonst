@@ -21,17 +21,26 @@ entity stack is
 end entity stack;
 
 architecture behavioural of stack is
-  signal memory_value : operand_t;
+  signal cell_1_value : operand_t;
 begin
-  top <= memory_value;
+
+  pushpop : process (push, pop)
+  begin
+    if rising_edge(push) then
+      cell_1_value <= value_in;
+    elsif rising_edge(pop) then
+      cell_1_value <= (others => '0');
+    end if;
+  end process pushpop;
+  
 
   memory_cell : entity work.memory_cell
     port map (
       clock => clk,
       reset => rst,
-      data_in => value_in,
-      write_enable => push,
-      data_out => memory_value
+      data_in => cell_1_value,
+      write_enable => push or pop,
+      data_out => top
       );
 
 end architecture behavioural;
