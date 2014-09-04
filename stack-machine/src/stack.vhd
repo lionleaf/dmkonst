@@ -23,7 +23,14 @@ architecture behavioural of stack is
   -- Fill in type and signal declarations here.
 
 begin  -- architecture behavioural
-
-  -- Fill in processes here.
+  
+  reset_mechanism : process (rst) 
+  begin
+    if rst = '1' then
+      top <= (others => '0');
+    end if;
+  end process reset_mechanism;
+  
+  
 
 end architecture behavioural;
