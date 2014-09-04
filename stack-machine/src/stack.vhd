@@ -22,17 +22,9 @@ end entity stack;
 
 architecture behavioural of stack is
   signal memory_value : operand_t;
-begin  -- architecture behavioural
-  
-  reset_mechanism : process (rst, memory_value) 
-  begin
-    if rst = '1' then
-      top <= (others => '0');
-    else
-      top <= memory_value;
-    end if;
-  end process reset_mechanism;
-  
+begin
+  top <= memory_value;
+
   memory_cell : entity work.memory_cell
     port map (
       clock => clk,
@@ -40,6 +32,6 @@ begin  -- architecture behavioural
       data_in => value_in,
       write_enable => push,
       data_out => memory_value
-      );  
+      );
 
 end architecture behavioural;
