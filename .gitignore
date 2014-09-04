@@ -1,3 +1,4 @@
+*.prj
 *.cmd_log
 *.lso
 *.spl
