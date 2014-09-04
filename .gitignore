@@ -53,4 +53,10 @@
 *.xml
 *.xrpt
 *.log
-
+*/_ngo/*
+*/_xmsgs/*
+*/iseconfig/*
+*/isim/*
+xilinxsim.ini
+*/xlnx_auto_0_xdb/*
+*/xst/*
