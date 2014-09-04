@@ -24,7 +24,7 @@ architecture behavioural of stack is
   signal memory_value : operand_t;
 begin  -- architecture behavioural
   
-  reset_mechanism : process (rst) 
+  reset_mechanism : process (rst, memory_value) 
   begin
     if rst = '1' then
       top <= (others => '0');
