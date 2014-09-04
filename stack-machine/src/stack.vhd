@@ -35,6 +35,7 @@ begin  -- architecture behavioural
   
   memory_cell : entity work.memory_cell
     port map (
+      clock => clk,
       reset => rst,
       data_in => value_in,
       write_enable => push,
