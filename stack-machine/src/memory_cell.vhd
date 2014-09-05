@@ -17,23 +17,18 @@ entity memory_cell is
 end memory_cell;
 
 architecture behavioral of memory_cell is
-
-    signal data : operand_t;
-
 begin
 
-    data_out <= data;
-  
     write_process : process (reset, clock, push, pop)
     begin
         if reset = '1' then
-            data <= (others => '0');
+            data_out <= (others => '0');
         else
             if rising_edge(clock) then 
                 if pop = '1' then
-                    data <= below_data;
+                    data_out <= below_data;
                 elsif push = '1' then
-                    data <= data_in;
+                    data_out <= data_in;
                 end if;
             end if;
         end if;
