@@ -70,8 +70,7 @@ begin  -- architecture behavioural
         read_instruction <= '0';
         pop <= '0';
         push <= '0';
-        -- alu_operation and stack_input_select is don't care
-			
+        
         if(empty = '1') then
           next_state <= idle;
         elsif (empty = '0') then
@@ -79,13 +78,11 @@ begin  -- architecture behavioural
         end if;
         
       when fetch =>
-        -- report "--- FETCH STATE ---";
         read_instruction <= '1';
         
         next_state <= decode; 
       
       when decode =>
-        -- report "--- DECODE STATE ---";
         read_instruction <= '0';
     
         if ( instruction(15 downto 8) = (15 downto 8 => '0' )) then -- if Opcode is PUSH
@@ -95,18 +92,19 @@ begin  -- architecture behavioural
 				end if;
       
       when push_operand =>
-        -- report "--- PUSH STATE ---";
         read_instruction <= '0';
         push <= '1';
         stack_input_select <= STACK_INPUT_OPERAND;
         
         operand(7 downto 0) <= instruction(7 downto 0);
+        
         next_state <= idle;
       
       when pop_b =>
         -- report "--- POP_B STATE ---";
         operand_b_wen <= '1';
         pop <= '1';
+        
         next_state <= pop_a;
       
       when pop_a =>
@@ -114,6 +112,7 @@ begin  -- architecture behavioural
         operand_a_wen <= '1';
         operand_b_wen <= '0';
         pop <= '1';
+        
         next_state <= compute;
         
       when compute =>
@@ -126,18 +125,17 @@ begin  -- architecture behavioural
            alu_operation <= alu_sub;
         end if;
         
-        
-        
-        
         next_state <= push_result;
       
       when push_result =>
         stack_input_select <= STACK_INPUT_RESULT;
         push <= '1';
+        
         next_state <= idle;
       
       when others =>
         next_state <= idle;
+        
     end case;    
   end process;
     
