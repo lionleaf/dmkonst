@@ -77,32 +77,65 @@ begin  -- architecture behavioural
         elsif (empty = '0') then
           next_state <= fetch;            
         end if;
+        
       when fetch =>
+        -- report "--- FETCH STATE ---";
         read_instruction <= '1';
+        
         next_state <= decode; 
+      
       when decode =>
+        -- report "--- DECODE STATE ---";
         read_instruction <= '0';
     
-        if ( instruction(15 downto 8) = (15 downto 8 => '0' )) then -- push 
+        if ( instruction(15 downto 8) = (15 downto 8 => '0' )) then -- if Opcode is PUSH
 					next_state <= push_operand;
-				else -- Not push 
+				else -- if Opcode is not push 
 					next_state <= pop_b;
 				end if;
+      
       when push_operand =>
+        -- report "--- PUSH STATE ---";
+        read_instruction <= '0';
         push <= '1';
         stack_input_select <= STACK_INPUT_OPERAND;
-        next_state <= idle;
+        
         operand(7 downto 0) <= instruction(7 downto 0);
         next_state <= idle;
+      
       when pop_b =>
-        pop <= '1';
+        -- report "--- POP_B STATE ---";
         operand_b_wen <= '1';
-        next_state <= pop_a;
-      when pop_a =>
         pop <= '1';
+        next_state <= pop_a;
+      
+      when pop_a =>
+        -- report "--- POP_A STATE ---";
         operand_a_wen <= '1';
+        operand_b_wen <= '0';
+        pop <= '1';
         next_state <= compute;
         
+      when compute =>
+        operand_a_wen <= '0';
+        pop <= '0';
+        
+        if unsigned(instruction(15 downto 8)) = 1 then -- if Opcode is PUSH
+           alu_operation <= alu_add;
+        elsif unsigned(instruction(15 downto 8)) = 2 then
+           alu_operation <= alu_sub;
+        end if;
+        
+        
+        
+        
+        next_state <= push_result;
+      
+      when push_result =>
+        stack_input_select <= STACK_INPUT_RESULT;
+        push <= '1';
+        next_state <= idle;
+      
       when others =>
         next_state <= idle;
     end case;    
