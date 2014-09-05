@@ -6,7 +6,7 @@ use work.defs.all;
 entity stack_machine is
   
   generic (
-    size : natural := 1024);
+    size : natural := 6);
 
   port (
     clk : in std_logic;

@@ -8,7 +8,7 @@ use work.memory_cell;
 entity stack is
   
   generic (
-    size : natural := 1024);            -- Maximum number of operands on stack
+    size : natural);            -- Maximum number of operands on stack
 
   port (
     clk       : in  std_logic;
@@ -21,35 +21,29 @@ entity stack is
 end entity stack;
 
 architecture behavioural of stack is
-  signal wire : operand_t;
+  type operand_vec is array(0 to size+1) of operand_t;
+  signal wire : operand_vec;
   signal top_out : operand_t;
 
 begin
-  top <= top_out;
 
-  top_cell : entity work.memory_cell
-    port map (
-      data_in => value_in,
-      data_out => top_out,
-      below_data => wire,
-      
-      clock => clk,
-      reset => rst,
-      push => push,
-      pop => pop
-      );
-      
-      
-  below_cell : entity work.memory_cell
-    port map (
-      data_in => top_out,
-      data_out => wire,
-      below_data => X"00",
-      
-      clock => clk,
-      reset => rst,
-      push => push,
-      pop => pop
-      );
+  wire(0) <= (others => '0');
+  wire(size+1) <= value_in;
+  top <= wire(size);
+
+  memory_cell : for i in 1 to size generate
+    cell : entity work.memory_cell
+      port map (
+        data_in => wire(i+1),
+        data_out => wire(i),
+        below_data => wire(i-1),
+        
+        clock => clk,
+        reset => rst,
+        push => push,
+        pop => pop
+        );
+  end generate;
+
 
 end architecture behavioural;
