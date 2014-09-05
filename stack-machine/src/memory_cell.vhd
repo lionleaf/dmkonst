@@ -20,12 +20,12 @@ architecture behavioral of memory_cell is
   signal data : operand_t;
 begin
   
-  buffer_process : process (clock)
-  begin
-    if rising_edge(clock) then
+--  buffer_process : process (clock)
+--  begin
+--    if rising_edge(clock) then
       data_out <= data;
-    end if;
-  end process;
+--    end if;
+--  end process;
   
   write_process : process (reset, clock, push, pop)
   begin
