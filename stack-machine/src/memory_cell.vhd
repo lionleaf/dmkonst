@@ -19,7 +19,7 @@ end memory_cell;
 architecture behavioral of memory_cell is
 begin
 
-    write_process : process (reset, clock, push, pop)
+    process (reset, clock, push, pop)
     begin
         if reset = '1' then
             data_out <= (others => '0');
@@ -32,6 +32,6 @@ begin
                 end if;
             end if;
         end if;
-    end process write_process;
+    end process;
 
-end Behavioral;
+end behavioral;
