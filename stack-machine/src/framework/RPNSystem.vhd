@@ -20,10 +20,12 @@ architecture Behavioral of RPNSystem is
 	signal stackTopSignal : std_logic_vector(7 downto 0);
 begin
 
-DummyRPNC:		entity work.RPNC port map (
-							clk => clk, reset => RPNCResetSignal, idle => RPNCIdleSignal,
-							empty => emptySignal, read_en => readEnableSignal,
-							instr_data => instrDataSignal, stack_top => stackTopSignal
+RPNC:		    entity work.stack_machine 
+            generic map (size => 256)
+            port map (
+							clk => clk, rst => RPNCResetSignal, 
+							empty => emptySignal, read_instruction => readEnableSignal,
+							instruction => instrDataSignal, stack_top => stackTopSignal
 						);
 						
 InstrBufferInst: 	entity work.InstructionBuffer port map (
@@ -31,7 +33,7 @@ InstrBufferInst: 	entity work.InstructionBuffer port map (
 							UART_Rx => UART_Rx, UART_Tx => UART_Tx,
 							empty => emptySignal, read_en => readEnableSignal, 
 							instr_data => instrDataSignal, stack_top => stackTopSignal,
-							rpnc_reset => RPNCResetSignal, idle => RPNCIdleSignal
+							rpnc_reset => RPNCResetSignal
 						);
 
 	-- drive the LEDs
