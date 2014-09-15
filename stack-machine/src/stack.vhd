@@ -8,7 +8,7 @@ use work.memory_cell;
 entity stack is 
 
     generic
-        (size       : natural -- Maximum number of operands on stack
+        (size       : natural := 3 -- Maximum number of operands on stack
         );
 
     port
