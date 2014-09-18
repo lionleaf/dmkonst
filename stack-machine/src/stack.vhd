@@ -8,7 +8,7 @@ use work.memory_cell;
 entity stack is 
 
     generic
-        (size       : natural := 3 -- Maximum number of operands on stack
+        (size       : natural := 1 -- Maximum number of operands on stack
         );
 
     port
@@ -39,14 +39,14 @@ begin
         cell:
         entity work.memory_cell
             port map
-                (data_in => wire(i+1)
-                ,data_out => wire(i)
-                ,below_data => wire(i-1)
-                
-                ,clock => clk
-                ,reset => rst
-                ,push => push
-                ,pop => pop
+                ( data_in => wire(i+1)
+                , data_out => wire(i)
+                , below_data => wire(i-1)
+
+                , clock => clk
+                , reset => rst
+                , push => push
+                , pop => pop
                 );
   end generate;
 
