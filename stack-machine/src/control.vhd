@@ -43,17 +43,32 @@ architecture behavioural of control is
 
     signal current_state : state_type;
     signal next_state : state_type;
-
+    signal opcode : opcode_t;
+    
 begin
 
-    process(clk, rst)
+    opcode <= instruction(15 downto 8);
+    operand <= instruction(7 downto 0);
+
+    with opcode(1) select alu_operation
+        <= alu_add         when '0'
+         , alu_sub         when others -- '1'
+    ;
+
+    process
+        ( clk
+        , rst
+        )
     begin
-        if (rst = '1') then -- Asyncon reset 
+        if rst = '1' then 
             current_state <= idle;
-		elsif( rising_edge(clk) ) then
-			current_state <= next_state;
+		else
+            if rising_edge(clk) then
+                current_state <= next_state;
+            end if;
 		end if;
 	end process;
+
 
     process
         ( clk
@@ -61,81 +76,56 @@ begin
         , instruction
         , empty
         , current_state
+        , opcode
         )
     begin
-        case current_state is
-            when idle => 
-                read_instruction <= '0';
-                operand_a_wen <= '0';
-                operand_b_wen <= '0';
-                read_instruction <= '0';
-                pop <= '0';
-                push <= '0';
+        stack_input_select <= STACK_INPUT_OPERAND;
+        next_state <= idle;
+        read_instruction <= '0';
+        operand_a_wen <= '0';
+        operand_b_wen <= '0';
+        read_instruction <= '0';
+        pop <= '0';
+        push <= '0';
 
-                if(empty = '1') then
-                    next_state <= idle;
-                elsif (empty = '0') then
-                    next_state <= fetch;            
+        case current_state is
+
+            when idle =>
+                if empty = '0' then
+                    next_state <= fetch;
                 end if;
 
             when fetch =>
                 read_instruction <= '1';
-        
-                next_state <= decode; 
-      
-            when decode =>
-                read_instruction <= '0';
+                next_state <= decode;
 
-                if ( instruction(15 downto 8) = (15 downto 8 => '0' )) then -- if Opcode is PUSH
+            when decode =>
+                if opcode(1 downto 0) = "00" then
                     next_state <= push_operand;
-				else -- if Opcode is not push 
+				else
 					next_state <= pop_b;
 				end if;
 
             when push_operand =>
-                read_instruction <= '0';
                 push <= '1';
                 stack_input_select <= STACK_INPUT_OPERAND;
-        
-                operand(7 downto 0) <= instruction(7 downto 0);
-        
-                next_state <= idle;
       
             when pop_b =>
-                -- report "--- POP_B STATE ---";
                 operand_b_wen <= '1';
                 pop <= '1';
-
                 next_state <= pop_a;
       
             when pop_a =>
-                -- report "--- POP_A STATE ---";
                 operand_a_wen <= '1';
-                operand_b_wen <= '0';
                 pop <= '1';
-        
                 next_state <= compute;
         
             when compute =>
-                operand_a_wen <= '0';
-                pop <= '0';
-
-                if unsigned(instruction(15 downto 8)) = 1 then -- if Opcode is PUSH
-                    alu_operation <= alu_add;
-                elsif unsigned(instruction(15 downto 8)) = 2 then
-                    alu_operation <= alu_sub;
-                end if;
-
                 next_state <= push_result;
 
             when push_result =>
                 stack_input_select <= STACK_INPUT_RESULT;
                 push <= '1';
-
-                next_state <= idle;
-
-            when others =>
-                next_state <= idle;
 
         end case;    
     end process;
