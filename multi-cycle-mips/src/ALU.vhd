@@ -30,11 +30,15 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity ALU is
-    Port ( dataA : in  STD_LOGIC_VECTOR (31 downto 0);
-           dataB : in  STD_LOGIC_VECTOR (31 downto 0);
+	generic (
+		ADDR_WIDTH : integer := 8;
+		DATA_WIDTH : integer := 32
+	);
+    Port ( data_a : in  STD_LOGIC_VECTOR (31 downto 0);
+           data_b : in  STD_LOGIC_VECTOR (31 downto 0);
            control : in  STD_LOGIC_VECTOR (3 downto 0);
            zero : out  STD_LOGIC;
-           ALUResult : out  STD_LOGIC_VECTOR (31 downto 0));
+           result : out  STD_LOGIC_VECTOR (31 downto 0));
 end ALU;
 
 architecture Behavioral of ALU is

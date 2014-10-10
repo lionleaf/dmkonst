@@ -19,7 +19,7 @@ entity MIPSProcessor is
 	);
 	port (
 		clk, reset 				: in std_logic;
-		processor_enable	: in std_logic;
+		processor_enable		: in std_logic;
 		imem_data_in			: in std_logic_vector(DATA_WIDTH-1 downto 0);
 		imem_address			: out std_logic_vector(ADDR_WIDTH-1 downto 0);
 		dmem_data_in			: in std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -30,24 +30,64 @@ entity MIPSProcessor is
 end MIPSProcessor;
 
 architecture Behavioral of MIPSProcessor is
-	signal counterReg : unsigned(31 downto 0);
+	signal instruction : std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal write_reg_addr : std_logic_vector(4 downto 0);
+	signal write_reg_data : std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal alu_data_a	: std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal alu_data_b	: std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal alu_result	: std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal alu_control : std_logic_vector(3 downto 0);
+	signal alu_zero : std_logic;
+	signal reg_write_enable : std_logic;
+	
+	signal mem_to_reg: std_logic;
+	signal reg_dest  : std_logic;
 begin
 
-	DummyProc: process(clk, reset)
-	begin
-		if reset = '1' then
-			counterReg <= (others => '0');
-		elsif rising_edge(clk) then
-			if processor_enable = '1' then
-				counterReg <= counterReg + 1;
-			end if;
-		end if;
-	end process;
-	
-	dmem_write_enable <= processor_enable;
-	imem_address <= (others => '0');
-	dmem_address <= std_logic_vector(counterReg(7 downto 0));
-	dmem_data_out <= std_logic_vector(counterReg);
+
+instruction <= imem_data_in;
+dmem_address <= alu_result(7 downto 0);
+
+mux_reg_dest: process(reg_dest, clk)
+begin
+	if(reg_dest = '1') then
+		write_reg_addr <= instruction(15 downto 11);
+	else
+		write_reg_addr <= instruction(20 downto 16);
+	end if;
+end process mux_reg_dest;
+
+mux_mem_to_reg: process(mem_to_reg, clk)
+begin
+	if(mem_to_reg = '1') then
+		write_reg_data <= dmem_data_in;
+	else
+		write_reg_data <= alu_result;
+	end if;
+end process mux_mem_to_reg;
+
+Registers: entity work.Registers(Behavioral) 
+					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
+					port map (
+					readReg1 	=> instruction(25 downto 21),
+					readReg2 	=> instruction(20 downto 16),
+					writeReg		=> write_reg_addr,
+					writeData	=> write_reg_data,
+					readData1 	=> alu_data_a,
+					readData2 	=> alu_data_b,
+					regWrite		=> reg_write_enable
+					);
+					
+ALU: entity work.ALU(Behavioral) 
+					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
+					port map (
+					data_a 	=> alu_data_a,
+					data_b 	=> alu_data_b,
+					control	=> alu_control,
+					zero 		=> alu_zero,
+					result 	=> alu_result
+					);
+					
 
 end Behavioral;
 

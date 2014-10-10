@@ -30,6 +30,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Registers is
+	generic (
+		ADDR_WIDTH : integer := 8;
+		DATA_WIDTH : integer := 32
+	);
     Port ( readReg1 : in  STD_LOGIC_VECTOR (4 downto 0);
            readReg2 : in  STD_LOGIC_VECTOR (4 downto 0);
            writeReg : in  STD_LOGIC_VECTOR (4 downto 0);
