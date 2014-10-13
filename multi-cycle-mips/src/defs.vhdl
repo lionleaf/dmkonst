@@ -9,6 +9,14 @@ package defs is
         , op_and
         , op_or
         , op_slt
+        , op_sll16
+        );
+        
+    type alu_override_t is
+        ( override_add
+        , override_sub
+        , override_sll16
+        , override_disabled
         );
 
     function to_op_t (opcode : std_logic_vector(5 downto 0))
