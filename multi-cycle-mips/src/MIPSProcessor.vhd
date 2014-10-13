@@ -11,6 +11,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use work.defs.all;
 
 
 entity MIPSProcessor is
@@ -39,9 +40,9 @@ architecture Behavioral of MIPSProcessor is
 	signal reg_data_b	: std_logic_vector(DATA_WIDTH - 1 downto 0);
 
 	signal alu_data_b	: std_logic_vector(DATA_WIDTH - 1 downto 0);
-	signal alu_result	: std_logic_vector(DATA_WIDTH - 1 downto 0);
-	signal alu_op : std_logic_vector(3 downto 0);
-	signal alu_zero : std_logic;
+	signal alu_result	: signed(DATA_WIDTH - 1 downto 0);
+	signal alu_op : op_t;
+	signal alu_zero : boolean;
 	
 	signal imm_data_extended : std_logic_vector(DATA_WIDTH - 1 downto 0);
     signal imm_addr_extended : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -53,6 +54,8 @@ architecture Behavioral of MIPSProcessor is
 	signal branch : std_logic;
 	signal jump : std_logic;
     signal alu_compare : std_logic;
+    signal update_pc : std_logic;
+    
 	
 	signal current_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
 	signal next_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -66,7 +69,7 @@ begin
 
 
 instruction <= imem_data_in;
-dmem_address <= alu_result(7 downto 0);
+dmem_address <= std_logic_vector(alu_result(7 downto 0));
 dmem_data_out <= reg_data_b;
 imem_address <= std_logic_vector(current_PC);
 
@@ -102,7 +105,7 @@ end process extend_immidiate;
 
 mux_branch : process(clk)
 begin
-	if branch = '1' and alu_zero = '1' then
+	if branch = '1' and alu_zero = true then
 		branch_or_inc_addr <= branch_addr;
 	else
 		branch_or_inc_addr <= incremented_PC;
@@ -141,7 +144,7 @@ begin
 	if(mem_to_reg = '1') then
 		write_reg_data <= dmem_data_in;
 	else
-		write_reg_data <= alu_result;
+		write_reg_data <= std_logic_vector(alu_result);
 	end if;
 end process mux_mem_to_reg;
 
@@ -150,9 +153,9 @@ end process mux_mem_to_reg;
 alu_control: process(clk)
 begin
 	if(alu_compare = '1') then
-    	alu_op <= "0000";
+    	alu_op <= op_sub;
 	else
-    	alu_op <= instruction(3 downto 0);
+        alu_op <= to_op_t(instruction(5 downto 0));
 	end if;
 end process alu_control;
 
@@ -173,13 +176,12 @@ Registers: entity work.Registers(Behavioral)
 					);
 					
 ALU: entity work.ALU(Behavioral) 
-					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
+					generic map (DATA_WIDTH => DATA_WIDTH) 
 					port map (
-					clk => clk, reset => reset,
-					data_a 	=> reg_data_a,
-					data_b 	=> alu_data_b,
-					control	=> alu_op,
-					zero 		=> alu_zero,
+					operand_left 	=> signed(reg_data_a),
+					operand_right 	=> signed(alu_data_b),
+					operator	    => alu_op,
+					result_is_zero 	=> alu_zero,
 					result 	=> alu_result
 					);
 					
@@ -188,7 +190,8 @@ PC: entity work.PC(Behavioral)
 					port map (
 					clk => clk, reset => reset,
 					current_PC	=> current_PC, 
-					next_PC 	=> next_PC
+					next_PC 	=> next_PC,
+                    update_pc   => update_pc
 					);
 
 Control: entity work.Control(Behavioral) 
@@ -203,7 +206,8 @@ Control: entity work.Control(Behavioral)
 					mem_write_enable => dmem_write_enable,
 					alu_src => alu_src,
 					reg_write_enable => reg_write_enable,
-					jump => jump
+					jump => jump,
+                    update_pc => update_pc
 					);
 					
 

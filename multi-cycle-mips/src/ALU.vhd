@@ -10,11 +10,11 @@ entity alu is
         );
 
     Port
-        ( operand_left   : in      signed (data_width downto 0)
-        ; operand_right  : in      signed (data_width downto 0)
+        ( operand_left   : in      signed (data_width - 1 downto 0)
+        ; operand_right  : in      signed (data_width - 1 downto 0)
         ; operator       : in      op_t
         ; result_is_zero : out     boolean
-        ; result         : buffer  signed (data_width downto 0)
+        ; result         : buffer  signed (data_width - 1 downto 0)
         );
 
 end ALU;
