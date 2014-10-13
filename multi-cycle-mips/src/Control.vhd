@@ -63,9 +63,10 @@ elsif (rising_edge(clk)) then
 end if;
 end process;
 
-process (current_s, clk, reset)
+process (current_s, opcode)
 begin
-    update_pc <= '0';
+     update_pc <= '0';
+
     case current_s is
     when fetch =>
         next_s <= execute;
@@ -83,12 +84,14 @@ begin
         --Do not proceed. Light LED
     end case;
  end process;
- 
-process (opcode, clk, reset)
-begin
 
+
+
+
+process (opcode)
+begin
 --default values
-   reg_dest    <= '1';
+   reg_dest    <= '0';
    branch      <= '0';
    mem_to_reg  <= '0';
    mem_write_enable <= '0';
@@ -100,27 +103,27 @@ begin
    
     case opcode is
         when "000000" => -- ALU operation (and, or, add, sub, slt, sll)
+            reg_dest    <= '1';
             reg_write_enable <= '1';
         when "000100" => -- beq branch if equal
+            reg_dest    <= '1';
             branch      <= '1';
             alu_override <= override_sub;
             
         when "000010" => -- jump
-            jump            <= '1';
+            reg_dest    <= '1';
+            jump        <= '1';
             
         when "100011" => -- lw load word
-            reg_dest    <= '0';
             mem_to_reg  <= '1';
             alu_override <= override_add;
             reg_write_enable <= '1';
         
         when "101011" => -- sw store word
-            reg_dest    <= '0';
             alu_override <= override_add;
             mem_write_enable <= '1';
             
         when "001111" => -- lui load upper imm
-            reg_dest    <= '0';
             alu_override <= override_sll16;
             alu_src     <= '1';
             reg_write_enable <= '1';
