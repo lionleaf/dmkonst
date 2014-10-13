@@ -33,6 +33,7 @@ begin
             when op_and => result <= operand_left and operand_right;
             when op_or  => result <= operand_left or  operand_right;
             when op_slt => result <= operand_left sll to_integer(operand_right);
+            when op_sll16 => result <= operand_right sll 16;
         end case;
     end process;
  

@@ -53,8 +53,9 @@ architecture Behavioral of MIPSProcessor is
 	signal alu_src : std_logic;
 	signal branch : std_logic;
 	signal jump : std_logic;
-    signal alu_compare : std_logic;
+    signal alu_override : alu_override_t;
     signal update_pc : std_logic;
+
     
 	
 	signal current_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -152,9 +153,13 @@ end process mux_mem_to_reg;
 
 alu_control: process(clk)
 begin
-	if(alu_compare = '1') then
+	if(alu_override = override_sub) then
     	alu_op <= op_sub;
-	else
+	elsif(alu_override = override_add) then
+        alu_op <= op_add;
+    elsif(alu_override = override_sll16) then
+        alu_op <= op_sll16;
+    else
         alu_op <= to_op_t(instruction(5 downto 0));
 	end if;
 end process alu_control;
@@ -202,7 +207,7 @@ Control: entity work.Control(Behavioral)
 					reg_dest => reg_dest,
 					branch => branch,
 					mem_to_reg => mem_to_reg,
-					alu_op => alu_compare,
+					alu_override => alu_override,
 					mem_write_enable => dmem_write_enable,
 					alu_src => alu_src,
 					reg_write_enable => reg_write_enable,
