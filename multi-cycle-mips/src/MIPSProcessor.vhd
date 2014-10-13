@@ -40,7 +40,7 @@ architecture Behavioral of MIPSProcessor is
 
 	signal alu_data_b	: std_logic_vector(DATA_WIDTH - 1 downto 0);
 	signal alu_result	: std_logic_vector(DATA_WIDTH - 1 downto 0);
-	signal alu_control : std_logic_vector(3 downto 0);
+	signal alu_op : std_logic_vector(3 downto 0);
 	signal alu_zero : std_logic;
 	
 	signal imm_data_extended : std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -50,8 +50,9 @@ architecture Behavioral of MIPSProcessor is
 	signal mem_to_reg: std_logic;
 	signal reg_dest  : std_logic;
 	signal alu_src : std_logic;
-	signal branch: std_logic;
-	signal jump: std_logic;
+	signal branch : std_logic;
+	signal jump : std_logic;
+    signal alu_compare : std_logic;
 	
 	signal current_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
 	signal next_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -89,7 +90,7 @@ end process concat_jump_addr;
 
 calc_branch_addr : process(clk)
 begin
-	branch_addr <= std_logic_vector(unsigned(incremented_PC) + unsigned(imm_addr_extended));
+	branch_addr <= std_logic_vector(signed(incremented_PC) + signed(imm_addr_extended));
 end process calc_branch_addr;
 
 extend_immidiate : process(clk)
@@ -146,6 +147,15 @@ end process mux_mem_to_reg;
 
 
 
+alu_control: process(clk)
+begin
+	if(alu_compare = '1') then
+    	alu_op <= "0000";
+	else
+    	alu_op <= instruction(3 downto 0);
+	end if;
+end process alu_control;
+
 
 
 
@@ -168,7 +178,7 @@ ALU: entity work.ALU(Behavioral)
 					clk => clk, reset => reset,
 					data_a 	=> reg_data_a,
 					data_b 	=> alu_data_b,
-					control	=> alu_control,
+					control	=> alu_op,
 					zero 		=> alu_zero,
 					result 	=> alu_result
 					);
@@ -189,7 +199,7 @@ Control: entity work.Control(Behavioral)
 					reg_dest => reg_dest,
 					branch => branch,
 					mem_to_reg => mem_to_reg,
-					alu_op => alu_control,
+					alu_op => alu_compare,
 					mem_write_enable => dmem_write_enable,
 					alu_src => alu_src,
 					reg_write_enable => reg_write_enable,

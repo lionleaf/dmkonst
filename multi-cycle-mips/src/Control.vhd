@@ -35,17 +35,17 @@ entity Control is
 		DATA_WIDTH : integer := 32
 	);
     Port ( 
-		clk, reset : in std_logic;
-		opcode : in  std_logic_vector(5 downto 0);
-      reg_dest : out  STD_LOGIC;
-      branch : out  STD_LOGIC;
-      mem_to_reg : out  STD_LOGIC;
-      alu_op : out  std_logic_vector(3 downto 0);
-      mem_write_enable : out  STD_LOGIC;
-      alu_src : out  STD_LOGIC;
-      reg_write_enable : out  STD_LOGIC;
-      jump : out  STD_LOGIC);
-end Control;
+		clk, reset  : in std_logic;
+		opcode      : in  std_logic_vector(5 downto 0);
+      reg_dest      : out  std_logic;
+      branch        : out  std_logic;
+      mem_to_reg    : out  std_logic;
+      alu_op        : out  std_logic;
+      mem_write_enable : out  std_logic;
+      alu_src       : out  std_logic;
+      reg_write_enable : out  std_logic;
+      jump          : out  std_logic);
+end control;
 
 architecture Behavioral of Control is
 
