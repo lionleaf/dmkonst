@@ -44,6 +44,7 @@ entity Control is
       mem_write_enable : out  std_logic;
       alu_src       : out  std_logic;
       reg_write_enable : out  std_logic;
+      update_pc : out  std_logic;
       jump          : out  std_logic);
 end control;
 

@@ -54,6 +54,8 @@ architecture Behavioral of MIPSProcessor is
 	signal branch : std_logic;
 	signal jump : std_logic;
     signal alu_compare : std_logic;
+    signal update_pc : std_logic;
+    
 	
 	signal current_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
 	signal next_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -188,7 +190,8 @@ PC: entity work.PC(Behavioral)
 					port map (
 					clk => clk, reset => reset,
 					current_PC	=> current_PC, 
-					next_PC 	=> next_PC
+					next_PC 	=> next_PC,
+                    update_pc   => update_pc
 					);
 
 Control: entity work.Control(Behavioral) 
@@ -203,7 +206,8 @@ Control: entity work.Control(Behavioral)
 					mem_write_enable => dmem_write_enable,
 					alu_src => alu_src,
 					reg_write_enable => reg_write_enable,
-					jump => jump
+					jump => jump,
+                    update_pc => update_pc
 					);
 					
 
