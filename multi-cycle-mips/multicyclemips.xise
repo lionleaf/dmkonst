@@ -67,16 +67,15 @@
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
-    <file xil_pn:name="src/Registers.vhd" xil_pn:type="FILE_VHDL"/>
     <file xil_pn:name="src/ALU.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
-    <file xil_pn:name="src/Registers.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="src/Control.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
-    <file xil_pn:name="src/Control.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="src/Registers.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
