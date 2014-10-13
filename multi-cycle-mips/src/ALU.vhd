@@ -1,53 +1,39 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    19:49:04 10/10/2014 
--- Design Name: 
--- Module Name:    ALU - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use work.defs.all;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+entity alu is
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+	generic
+        ( data_width : integer := 32
+        );
 
-entity ALU is
-	generic (
-		ADDR_WIDTH : integer := 8;
-		DATA_WIDTH : integer := 32
-	);
-    Port ( 
-		clk, reset : in std_logic;
-		data_a : in  STD_LOGIC_VECTOR (31 downto 0);
-      data_b : in  STD_LOGIC_VECTOR (31 downto 0);
-      control : in  STD_LOGIC_VECTOR (3 downto 0);
-      zero : out  STD_LOGIC;
-      result : out  STD_LOGIC_VECTOR (31 downto 0)
-		);
+    Port
+        ( operand_left   : in      signed (data_width downto 0)
+        ; operand_right  : in      signed (data_width downto 0)
+        ; operator       : in      op_t
+        ; result_is_zero : out     boolean
+        ; result         : buffer  signed (data_width downto 0)
+        );
+
 end ALU;
 
-architecture Behavioral of ALU is
-
+architecture behavioral of alu is
+    
 begin
+    
+    result_is_zero <= (result = 0);
 
-
-end Behavioral;
-
+    process (operator, operand_left, operand_right)
+    begin
+        case operator is
+            when op_add => result <= operand_left +   operand_right;
+            when op_sub => result <= operand_left -   operand_right;
+            when op_and => result <= operand_left and operand_right;
+            when op_or  => result <= operand_left or  operand_right;
+            when op_slt => result <= operand_left sll to_integer(operand_right);
+        end case;
+    end process;
+ 
+end behavioral;
