@@ -171,13 +171,13 @@ Registers: entity work.Registers(Behavioral)
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
 					clk => clk, reset => reset,
-					readReg1 	=> instruction(25 downto 21),
-					readReg2 	=> instruction(20 downto 16),
-					writeReg		=> write_reg_addr,
-					writeData	=> write_reg_data,
-					readData1 	=> reg_data_a,
-					readData2 	=> reg_data_b,
-					regWrite		=> reg_write_enable
+					read_reg_1 	=> instruction(25 downto 21),
+					read_reg_2 	=> instruction(20 downto 16),
+					write_reg		=> write_reg_addr,
+					write_data	=> write_reg_data,
+					read_data_1 	=> reg_data_a,
+					read_data_2 	=> reg_data_b,
+					reg_write		=> reg_write_enable
 					);
 					
 ALU: entity work.ALU(Behavioral) 
