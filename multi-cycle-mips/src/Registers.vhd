@@ -22,7 +22,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -36,19 +36,32 @@ entity Registers is
 	);
     Port ( 
 		clk, reset : in std_logic;
-		readReg1 : in  STD_LOGIC_VECTOR (4 downto 0);
-      readReg2 : in  STD_LOGIC_VECTOR (4 downto 0);
-      writeReg : in  STD_LOGIC_VECTOR (4 downto 0);
-      writeData : in  STD_LOGIC_VECTOR (31 downto 0);
-      regWrite : in  STD_LOGIC;
-      readData1 : out  STD_LOGIC_VECTOR (31 downto 0);
-      readData2 : out  STD_LOGIC_VECTOR (31 downto 0));
+		read_reg_1 : in  STD_LOGIC_VECTOR (4 downto 0);
+      read_reg_2 : in  STD_LOGIC_VECTOR (4 downto 0);
+      write_reg : in  STD_LOGIC_VECTOR (4 downto 0);
+      write_data : in  STD_LOGIC_VECTOR (31 downto 0);
+      reg_write : in  STD_LOGIC;
+      read_data_1 : out  STD_LOGIC_VECTOR (31 downto 0);
+      read_data_2 : out  STD_LOGIC_VECTOR (31 downto 0));
 end Registers;
 
 architecture Behavioral of Registers is
-
+    subtype register_t is std_logic_vector(DATA_WIDTH - 1 downto 0);
+    type regfile_t is array (integer range <>) of register_t;
+    signal regfile : regfile_t(0 to 31);
+    constant regfile_reset : regfile_t(0 to 31) := (others => (others => '0'));
 begin
 
+    read_data_1 <= regfile(to_integer(unsigned(read_reg_1)));
+    read_data_2 <= regfile(to_integer(unsigned(read_reg_2)));
+
+    process (clk) begin
+        if rising_edge(clk) then
+            if reg_write = '1' then
+                regfile(to_integer(unsigned(write_reg))) <= write_data;
+            end if;
+        end if;
+    end process;
 
 end Behavioral;
 
