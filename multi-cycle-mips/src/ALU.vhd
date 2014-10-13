@@ -32,7 +32,7 @@ begin
             when op_sub => result <= operand_left -   operand_right;
             when op_and => result <= operand_left and operand_right;
             when op_or  => result <= operand_left or  operand_right;
-            when op_slt => result <= operand_left sll to_integer(operand_right);
+            when op_slt => result <= operand_left sll to_integer(unsigned(operand_right));
         end case;
     end process;
  
