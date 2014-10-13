@@ -34,13 +34,15 @@ entity Registers is
 		ADDR_WIDTH : integer := 8;
 		DATA_WIDTH : integer := 32
 	);
-    Port ( readReg1 : in  STD_LOGIC_VECTOR (4 downto 0);
-           readReg2 : in  STD_LOGIC_VECTOR (4 downto 0);
-           writeReg : in  STD_LOGIC_VECTOR (4 downto 0);
-           writeData : in  STD_LOGIC_VECTOR (31 downto 0);
-           regWrite : in  STD_LOGIC;
-           readData1 : out  STD_LOGIC_VECTOR (31 downto 0);
-           readData2 : out  STD_LOGIC_VECTOR (31 downto 0));
+    Port ( 
+		clk, reset : in std_logic;
+		readReg1 : in  STD_LOGIC_VECTOR (4 downto 0);
+      readReg2 : in  STD_LOGIC_VECTOR (4 downto 0);
+      writeReg : in  STD_LOGIC_VECTOR (4 downto 0);
+      writeData : in  STD_LOGIC_VECTOR (31 downto 0);
+      regWrite : in  STD_LOGIC;
+      readData1 : out  STD_LOGIC_VECTOR (31 downto 0);
+      readData2 : out  STD_LOGIC_VECTOR (31 downto 0));
 end Registers;
 
 architecture Behavioral of Registers is

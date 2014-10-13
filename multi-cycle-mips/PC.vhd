@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    19:49:04 10/10/2014 
+-- Create Date:    11:24:52 10/13/2014 
 -- Design Name: 
--- Module Name:    ALU - Behavioral 
+-- Module Name:    PC - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,22 +29,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity ALU is
+entity PC is
 	generic (
 		ADDR_WIDTH : integer := 8;
 		DATA_WIDTH : integer := 32
 	);
-    Port ( 
-		clk, reset : in std_logic;
-		data_a : in  STD_LOGIC_VECTOR (31 downto 0);
-      data_b : in  STD_LOGIC_VECTOR (31 downto 0);
-      control : in  STD_LOGIC_VECTOR (3 downto 0);
-      zero : out  STD_LOGIC;
-      result : out  STD_LOGIC_VECTOR (31 downto 0)
-		);
-end ALU;
+    Port ( clk : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
+           next_PC : in  STD_LOGIC_VECTOR (ADDR_WIDTH - 1 downto 0);
+           current_PC : out  STD_LOGIC_VECTOR (ADDR_WIDTH - 1 downto 0));
+end PC;
 
-architecture Behavioral of ALU is
+architecture Behavioral of PC is
 
 begin
 

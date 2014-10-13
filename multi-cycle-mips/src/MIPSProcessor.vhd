@@ -12,6 +12,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+
 entity MIPSProcessor is
 	generic (
 		ADDR_WIDTH : integer := 8;
@@ -42,7 +43,9 @@ architecture Behavioral of MIPSProcessor is
 	signal alu_control : std_logic_vector(3 downto 0);
 	signal alu_zero : std_logic;
 	
-	signal imm_sign_extended : std_logic_vector(DATA_WIDTH - 1 downto 0);
+	signal imm_data_extended : std_logic_vector(DATA_WIDTH - 1 downto 0);
+    signal imm_addr_extended : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+
 	
 	signal mem_to_reg: std_logic;
 	signal reg_dest  : std_logic;
@@ -50,17 +53,74 @@ architecture Behavioral of MIPSProcessor is
 	signal branch: std_logic;
 	signal jump: std_logic;
 	
+	signal current_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	signal next_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	signal incremented_PC : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	signal jump_addr : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	signal branch_addr : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	signal branch_or_inc_addr : std_logic_vector(ADDR_WIDTH - 1 downto 0);
+	
+	
 begin
 
 
 instruction <= imem_data_in;
 dmem_address <= alu_result(7 downto 0);
 dmem_data_out <= reg_data_b;
+imem_address <= std_logic_vector(current_PC);
+
+
+
+
+
+increment_PC : process(clk)
+begin
+	incremented_PC <= std_logic_vector(unsigned(current_PC) + 1);
+end process increment_PC;
+
+concat_jump_addr : process(clk)
+begin
+	if ADDR_WIDTH > 26 then
+        jump_addr <= incremented_PC(ADDR_WIDTH - 1 downto 26) & instruction(25 downto 0);
+    else
+        jump_addr <= instruction(ADDR_WIDTH - 1 downto 0);
+    end if;
+end process concat_jump_addr;
+
+calc_branch_addr : process(clk)
+begin
+	branch_addr <= std_logic_vector(unsigned(incremented_PC) + unsigned(imm_addr_extended));
+end process calc_branch_addr;
+
+extend_immidiate : process(clk)
+begin
+	imm_data_extended <= std_logic_vector(resize(signed(instruction(15 downto 0)), DATA_WIDTH));
+    imm_addr_extended <= std_logic_vector(resize(signed(instruction(15 downto 0)), ADDR_WIDTH));
+end process extend_immidiate;
+
+
+mux_branch : process(clk)
+begin
+	if branch = '1' and alu_zero = '1' then
+		branch_or_inc_addr <= branch_addr;
+	else
+		branch_or_inc_addr <= incremented_PC;
+	end if;
+end process mux_branch;
+
+mux_jump : process(clk)
+begin
+	if jump = '1' then
+		next_PC <= jump_addr;
+	else
+		next_PC <= branch_or_inc_addr;
+	end if;
+end process mux_jump;
 
 mux_alu_src : process(clk)
 begin
 	if(alu_src = '1') then
-		alu_data_b <= imm_sign_extended;
+		alu_data_b <= imm_data_extended;
 	else
 		alu_data_b <= reg_data_b;
 	end if;
@@ -84,9 +144,15 @@ begin
 	end if;
 end process mux_mem_to_reg;
 
+
+
+
+
+
 Registers: entity work.Registers(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
+					clk => clk, reset => reset,
 					readReg1 	=> instruction(25 downto 21),
 					readReg2 	=> instruction(20 downto 16),
 					writeReg		=> write_reg_addr,
@@ -99,16 +165,26 @@ Registers: entity work.Registers(Behavioral)
 ALU: entity work.ALU(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
+					clk => clk, reset => reset,
 					data_a 	=> reg_data_a,
 					data_b 	=> alu_data_b,
 					control	=> alu_control,
 					zero 		=> alu_zero,
 					result 	=> alu_result
 					);
+					
+PC: entity work.PC(Behavioral) 
+					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
+					port map (
+					clk => clk, reset => reset,
+					current_PC	=> current_PC, 
+					next_PC 	=> next_PC
+					);
 
 Control: entity work.Control(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
+					clk => clk, reset => reset,
 					opcode => instruction(31 downto 26),
 					reg_dest => reg_dest,
 					branch => branch,
