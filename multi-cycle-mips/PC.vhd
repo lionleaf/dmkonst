@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    02:05:19 10/11/2014 
+-- Create Date:    11:24:52 10/13/2014 
 -- Design Name: 
--- Module Name:    Control - Behavioral 
+-- Module Name:    PC - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,25 +29,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Control is
+entity PC is
 	generic (
 		ADDR_WIDTH : integer := 8;
 		DATA_WIDTH : integer := 32
 	);
-    Port ( 
-		clk, reset  : in std_logic;
-		opcode      : in  std_logic_vector(5 downto 0);
-      reg_dest      : out  std_logic;
-      branch        : out  std_logic;
-      mem_to_reg    : out  std_logic;
-      alu_op        : out  std_logic;
-      mem_write_enable : out  std_logic;
-      alu_src       : out  std_logic;
-      reg_write_enable : out  std_logic;
-      jump          : out  std_logic);
-end control;
+    Port ( clk : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
+           next_PC : in  STD_LOGIC_VECTOR (ADDR_WIDTH - 1 downto 0);
+           current_PC : out  STD_LOGIC_VECTOR (ADDR_WIDTH - 1 downto 0));
+end PC;
 
-architecture Behavioral of Control is
+architecture Behavioral of PC is
 
 begin
 
