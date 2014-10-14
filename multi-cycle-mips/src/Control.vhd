@@ -37,6 +37,7 @@ entity Control is
 	);
     Port ( 
 		clk, reset      : in   std_logic;
+        processor_enable: in   std_logic;
 		opcode          : in   std_logic_vector(5 downto 0);
         reg_dest        : out  std_logic;
         branch          : out  std_logic;
@@ -50,14 +51,14 @@ entity Control is
 end control;
 
 architecture Behavioral of Control is
-    type state_t is (fetch, execute, stall, error_s);  --type of state machine.
+    type state_t is (initial_state, first_fetch, fetch, execute, stall, error_s);  --type of state machine.
     signal current_s, next_s: state_t;
 begin
 
-process (clk,reset)
+process (clk,reset, processor_enable)
 begin
- if (reset='1') then
-  current_s <= fetch;  --default state on reset.
+ if (reset='1' or processor_enable = '0') then
+  current_s <= initial_state;  --default state on reset.
 elsif (rising_edge(clk)) then
   current_s <= next_s;   --state change.
 end if;
@@ -68,6 +69,10 @@ begin
      update_pc <= '0';
 
     case current_s is
+    when initial_state =>
+        next_s <= first_fetch;
+    when first_fetch =>
+        next_s <= execute;
     when fetch =>
         next_s <= execute;
         update_pc <= '1';
@@ -79,7 +84,11 @@ begin
             next_s <= fetch;
         end if; 
     when stall =>
-        next_s <= fetch;    
+        if(processor_enable = '1') then
+            next_s <= fetch;
+        else
+            next_s <= stall;
+        end if;
     when error_s =>
         --Do not proceed. Light LED
     end case;

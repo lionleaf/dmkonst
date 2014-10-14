@@ -52,8 +52,23 @@ architecture Behavioral of Registers is
     constant regfile_reset : regfile_t(0 to 31) := (others => (others => '0'));
 begin
 
-    read_data_1 <= regfile(to_integer(unsigned(read_reg_1)));
-    read_data_2 <= regfile(to_integer(unsigned(read_reg_2)));
+    process (clk, regfile, read_reg_1) begin
+        if to_integer(unsigned(read_reg_1)) = 0 then
+            read_data_1 <= (others => '0');  -- Hardwire r0 to 0
+        else
+            read_data_1 <= regfile(to_integer(unsigned(read_reg_1)));
+        end if;
+    end process;
+    
+    
+    process (clk, regfile, read_reg_2) begin
+        if read_reg_2 = "00000" then
+            read_data_2 <= (others => '0');  -- Hardwire r0 to 0
+        else
+            read_data_2 <= regfile(to_integer(unsigned(read_reg_2)));
+        end if;
+    end process;   
+    
 
     process (clk) begin
         if rising_edge(clk) then
