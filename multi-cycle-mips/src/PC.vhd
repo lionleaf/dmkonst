@@ -48,7 +48,7 @@ process (clk, reset)
 begin
     if (reset = '1') then
         current_PC <= (others => '0');
-    elsif(rising_edge(clk) and update_pc = '1') then
+    elsif(falling_edge(clk) and update_pc = '1') then
         current_PC <= next_PC;
     end if;
 end process;
