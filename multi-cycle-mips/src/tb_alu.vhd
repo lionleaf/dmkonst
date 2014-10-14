@@ -31,18 +31,18 @@ architecture behavior of tb_alu is
     
 
     --inputs
-    signal operand_left  : data_t;
-    signal operand_right : data_t;
-    signal operator      : op_t;
+    signal operand_left  : data_t := num(0);
+    signal operand_right : data_t := num(0);
+    signal operator      : op_t   := op_add;
 
  	--outputs
-    signal result_is_zero : boolean;
-    signal result         : data_t;
+    signal result_is_zero : boolean := true;
+    signal result         : data_t := num(0);
  
     --clocks
     constant clock_period : time := 10 ns;
 
-    signal expected_result : integer;
+    signal expected_result : integer := 0;
 begin
  
     -- instantiate the unit under test (uut)
@@ -60,16 +60,17 @@ begin
 
     -- stimulus process
     stim_proc: process
-    begin		
+    begin
+        wait for 100ns;
         report "====== Test starting ======";
         
         operator <= op_add;
         operand_left <= num(1);
         operand_right <= num(2);
-        expected_result <= 3;
+        expected_result <= 1+2;
         wait for clock_period;
         assert result = expected_result report str(operand_left) &"+"& str(operand_right) &" should be "& str(expected_result);
-        assert result_is_zero = false report "0 + 0 should give result_is_zero";
+        assert result_is_zero = (expected_result = 0) report str(operand_left) &"+"& str(operand_right) &" should give result_is_zero";
       
         --for i in integer'low to integer'high loop
         --for j in integer'low to integer'high loop
