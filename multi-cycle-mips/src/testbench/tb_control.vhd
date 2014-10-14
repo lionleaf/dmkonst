@@ -118,25 +118,46 @@ BEGIN
 --         jump : OUT  std_logic
    -- Stimulus process
    stim_proc: process
-   begin		
-        -- hold reset state for 100 ns
-        reset <= '1';
-        processor_enable <= '0';
-        wait for 100 ns;	
-        reset <= '0';
-        
-        wait for 10 * clk_period;
---        Check that processor is disabled.
-        
-        assert update_pc = '0' report "Update PC is non-zero with disabled processor." severity error;
-        assert mem_write_enable = '1' report "Update PC is non-zero with disabled processor." severity failure;
+        procedure check(condition:boolean; error_msg:string) is begin
+            assert condition report error_msg severity failure;
+        end procedure check;
 
-        
+        subtype opcode_t is std_logic_vector(5 downto 0);
 
-		
+        procedure perform_reset is begin
+            -- hold reset state for 100 ns
+            reset <= '1';
+            wait for 100 ns;
+            reset <= '0';
+        end procedure;
 
 
-      wait;
+        procedure check_disabled
+                ( opcode_in : std_logic_vector(5 downto 0)
+                ; opcode_desc : string
+        ) is begin
+            perform_reset;
+            processor_enable <= '0';
+            opcode <= opcode_in;
+
+            wait for clk_period;
+
+            report "Opcode: "& opcode_desc;
+            check(update_pc = '0', "update_pc is high");
+            check(mem_write_enable = '0', "mem_write_enable is high");
+            check(reg_write_enable = '0', "reg_write_enable is high");
+        end procedure check_disabled;
+
+   begin
+        report "== Checking disabled processor ==";
+        check_disabled("000000", "000000: add, sub, and, or, slt, sll");
+        check_disabled("000010", "000010: jump");
+        check_disabled("100011", "100011: load");
+        check_disabled("101011", "101011: store");
+        check_disabled("001111", "001111: load immediate");
+
+        report "=== Testbench passed successfully! ===";
+        wait;
    end process;
 
 END;
