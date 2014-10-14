@@ -126,10 +126,12 @@ begin
         when "100011" => -- lw load word
             mem_to_reg  <= '1';
             alu_override <= override_add;
+            alu_src     <= '1';
             reg_write_enable <= '1';
         
         when "101011" => -- sw store word
             alu_override <= override_add;
+            alu_src     <= '1';
             mem_write_enable <= '1';
             
         when "001111" => -- lui load upper imm
