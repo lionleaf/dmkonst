@@ -14,12 +14,12 @@ entity alu is
         ; operand_right  : in      signed (data_width - 1 downto 0)
         ; operator       : in      op_t
         ; result_is_zero : out     boolean
-        ; result         : buffer  signed (data_width - 1 downto 0)
+        ; result         : buffer  signed (data_width - 1 downto 0) := to_signed(0, data_width)
         );
 
 end alu;
 
-architecture behavioral of alu is   
+architecture behavioral of alu is
 begin
 
     result_is_zero <= (result = 0);
