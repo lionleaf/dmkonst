@@ -60,7 +60,7 @@ end process;
 
 process (current_s, opcode)
 begin
-     update_pc <= '0';
+    update_pc <= '0';
     write_enable <= '0';
 
     case current_s is
@@ -80,6 +80,7 @@ begin
             next_s <= fetch;
         end if; 
     when stall =>
+        write_enable <= '1';
         if(processor_enable = '1') then
             next_s <= fetch;
         else
