@@ -78,12 +78,12 @@ imem_address <= std_logic_vector(current_PC);
 
 
 
-increment_PC : process(clk)
+increment_PC : process(current_PC)
 begin
 	incremented_PC <= std_logic_vector(unsigned(current_PC) + 1);
 end process increment_PC;
 
-concat_jump_addr : process(clk)
+concat_jump_addr : process(instruction, incremented_PC)
 begin
 	if ADDR_WIDTH > 26 then
         jump_addr <= incremented_PC(ADDR_WIDTH - 1 downto 26) & instruction(25 downto 0);
@@ -92,19 +92,19 @@ begin
     end if;
 end process concat_jump_addr;
 
-calc_branch_addr : process(clk)
+calc_branch_addr : process(incremented_PC, imm_addr_extended)
 begin
 	branch_addr <= std_logic_vector(signed(incremented_PC) + signed(imm_addr_extended));
 end process calc_branch_addr;
 
-extend_immidiate : process(clk)
+extend_immidiate : process(instruction)
 begin
 	imm_data_extended <= std_logic_vector(resize(signed(instruction(15 downto 0)), DATA_WIDTH));
     imm_addr_extended <= std_logic_vector(resize(signed(instruction(15 downto 0)), ADDR_WIDTH));
 end process extend_immidiate;
 
 
-mux_branch : process(clk)
+mux_branch : process(branch_addr, incremented_PC, branch, alu_zero)
 begin
 	if branch = '1' and alu_zero = true then
 		branch_or_inc_addr <= branch_addr;
@@ -113,7 +113,7 @@ begin
 	end if;
 end process mux_branch;
 
-mux_jump : process(clk)
+mux_jump : process(jump_addr, branch_or_inc_addr, jump)
 begin
 	if jump = '1' then
 		next_PC <= jump_addr;
@@ -122,7 +122,7 @@ begin
 	end if;
 end process mux_jump;
 
-mux_alu_src : process(clk)
+mux_alu_src : process(imm_data_extended, reg_data_b, alu_src)
 begin
 	if(alu_src = '1') then
 		alu_data_b <= imm_data_extended;
@@ -131,7 +131,7 @@ begin
 	end if;
 end process mux_alu_src;	
 
-mux_reg_dest: process(clk)
+mux_reg_dest: process(reg_dest, instruction)
 begin
 	if(reg_dest = '1') then
 		write_reg_addr <= instruction(15 downto 11);
@@ -140,7 +140,7 @@ begin
 	end if;
 end process mux_reg_dest;
 
-mux_mem_to_reg: process(clk)
+mux_mem_to_reg: process(mem_to_reg, dmem_data_in, alu_result)
 begin
 	if(mem_to_reg = '1') then
 		write_reg_data <= dmem_data_in;
@@ -151,7 +151,7 @@ end process mux_mem_to_reg;
 
 
 
-alu_control: process(clk)
+alu_control: process(alu_override, instruction)
 begin
 	if(alu_override = override_sub) then
     	alu_op <= op_sub;
