@@ -44,11 +44,11 @@ end PC;
 architecture Behavioral of PC is
 begin
 
-process (clk, reset)
+process (clk, reset, update_pc)
 begin
     if (reset = '1') then
         current_PC <= (others => '0');
-    elsif(falling_edge(clk) and update_pc = '1') then
+    elsif rising_edge(update_pc) then
         current_PC <= next_PC;
     end if;
 end process;
