@@ -66,6 +66,13 @@ begin
             when others => --Error, should not happen
         end case;
 
+
+        -- Make sure the processor does not commit anyting when disabled
+        if processor_enable = '0' then
+            mem_write_enable <= '0';
+            reg_write_enable <= '0';
+        end if;
+
 end process;
 
 end Behavioral;
