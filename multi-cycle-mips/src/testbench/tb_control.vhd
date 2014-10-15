@@ -156,6 +156,79 @@ BEGIN
         check_disabled("101011", "101011: store");
         check_disabled("001111", "001111: load immediate");
 
+
+        report "== Checking enabled processor ==";
+
+
+        report "Opcode: 000000: add, sub, and, or, slt, sll";
+        perform_reset;
+        processor_enable <= '1';
+        opcode <= "000000";
+        wait for clk_period;
+        check(reg_dest         = '1', "alu instructions are r-type. reg_dest should be 1");
+        check(alu_src          = '0', "alu instructions are r-type. alu_src should be 0");
+        check(alu_override     = override_disabled, "alu_override is not orverride_disabled");
+        check(branch           = '0', "branch is not 0");
+        check(jump             = '0', "jump is not 1");
+        check(mem_to_reg       = '0', "mem_to_reg is not 0");
+        check(mem_write_enable = '0', "mem_write_enable is not 0");
+        check(reg_write_enable = '1', "reg_write_enable is not 1");
+
+
+        report "Opcode: 000010: jump";
+        perform_reset;
+        processor_enable <= '1';
+        opcode <= "000010";
+        wait for clk_period;
+        check(jump             = '1', "jump is not 1");
+        check(mem_write_enable = '0', "mem_write_enable is not 0");
+        check(reg_write_enable = '0', "reg_write_enable is not 0");
+
+
+        report "Opcode: 100011: load";
+        perform_reset;
+        processor_enable <= '1';
+        opcode <= "100011";
+        wait for clk_period;
+        check(reg_dest         = '0', "load instructions are i-type. reg_dest should be 0");
+        check(alu_src          = '1', "load instructions are i-type. alu_src should be 1");
+        check(alu_override     = override_add, "alu_override is not override_add. jump needs to add rs and imm");
+        check(branch           = '0', "branch is not 0");
+        check(jump             = '0', "jump is not 0");
+        check(mem_to_reg       = '1', "mem_to_reg is not 1");
+        check(mem_write_enable = '0', "mem_write_enable is not 0");
+        check(reg_write_enable = '1', "reg_write_enable is not 1");
+
+
+        report "Opcode: 101011: store";
+        perform_reset;
+        processor_enable <= '1';
+        opcode <= "101011";
+        wait for clk_period;
+        check(reg_dest         = '0', "store instructions are i-type. reg_dest should be 0");
+        check(alu_src          = '1', "store instructions are i-type. alu_src should be 1");
+        check(alu_override     = override_add, "alu_override is not override_add. jump needs to add rs and imm");
+        check(branch           = '0', "branch is not 0");
+        check(jump             = '0', "jump is not 0");
+        check(mem_write_enable = '1', "mem_write_enable is not 1");
+        check(reg_write_enable = '0', "reg_write_enable is not 0");
+
+
+        report "Opcode: 001111: load immediate";
+        perform_reset;
+        processor_enable <= '1';
+        opcode <= "001111";
+        wait for clk_period;
+        check(reg_dest         = '0', "load imm instructions are i-type. reg_dest should be 0");
+        check(alu_src          = '1', "load imm instructions are i-type. alu_src should be 1");
+        check(alu_override     = override_sll16, "alu_override is not override_sll16");
+        check(branch           = '0', "branch is not 0");
+        check(jump             = '0', "jump is not 0");
+        check(mem_to_reg       = '0', "mem_to_reg is not 0");
+        check(mem_write_enable = '0', "mem_write_enable is not 0");
+        check(reg_write_enable = '1', "reg_write_enable is not 1");
+
+
         report "=== Testbench passed successfully! ===";
         wait;
    end process;
