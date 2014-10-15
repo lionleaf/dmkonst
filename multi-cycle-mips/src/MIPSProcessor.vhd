@@ -55,6 +55,7 @@ architecture Behavioral of MIPSProcessor is
 	signal jump : std_logic;
     signal alu_override : alu_override_t;
     signal update_pc : std_logic;
+    signal write_enable : std_logic;
 
     
 	
@@ -204,12 +205,13 @@ Control: entity work.Control(Behavioral)
 					port map (
 					clk => clk, reset => reset, processor_enable => processor_enable,
 					opcode => instruction(31 downto 26),
-                    update_pc => update_pc
+                    update_pc => update_pc,
+                    write_enable => write_enable
 					);
 
 decode: entity work.decode(Behavioral) 
 					port map (
-					processor_enable => processor_enable,
+					write_enable => write_enable,
 					opcode => instruction(31 downto 26),
 					reg_dest => reg_dest,
 					branch => branch,

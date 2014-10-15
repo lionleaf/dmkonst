@@ -5,7 +5,7 @@ use work.defs.all;
 entity decode is
     Port
         ( opcode           : in   std_logic_vector(5 downto 0)
-        ; processor_enable : in   std_logic
+        ; write_enable     : in   std_logic
         ; reg_dest         : out  std_logic
         ; branch           : out  std_logic
         ; mem_to_reg       : out  std_logic
@@ -20,7 +20,7 @@ end decode;
 architecture Behavioral of decode is
 begin
 
-    process (opcode, processor_enable)
+    process (opcode, write_enable)
     begin
         --default values
         reg_dest          <= '0';
@@ -67,9 +67,7 @@ begin
             when others => --Error, should not happen
         end case;
 
-
-        -- Make sure the processor does not commit anyting when disabled
-        if processor_enable = '0' then
+        if write_enable = '0' then
             mem_write_enable <= '0';
             reg_write_enable <= '0';
         end if;

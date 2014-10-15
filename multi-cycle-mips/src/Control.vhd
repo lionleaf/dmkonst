@@ -39,7 +39,8 @@ entity Control is
 		clk, reset      : in   std_logic;
         processor_enable: in   std_logic;
 		opcode          : in   std_logic_vector(5 downto 0);
-        update_pc       : out  std_logic
+        update_pc       : out  std_logic;
+        write_enable    : out  std_logic
     );
 end control;
 
@@ -60,6 +61,7 @@ end process;
 process (current_s, opcode)
 begin
      update_pc <= '0';
+    write_enable <= '0';
 
     case current_s is
     when initial_state =>
@@ -70,6 +72,7 @@ begin
         next_s <= execute;
         update_pc <= '1';
     when execute =>
+        write_enable <= '1';
         --If lw or sw stall one cycle
         if opcode = "100011" or opcode = "101011" then
            next_s <= stall;
