@@ -20,7 +20,7 @@ end decode;
 architecture Behavioral of decode is
 begin
 
-    process (opcode)
+    process (opcode, processor_enable)
     begin
         --default values
         reg_dest          <= '0';
