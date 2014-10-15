@@ -204,6 +204,13 @@ Control: entity work.Control(Behavioral)
 					port map (
 					clk => clk, reset => reset, processor_enable => processor_enable,
 					opcode => instruction(31 downto 26),
+                    update_pc => update_pc
+					);
+
+decode: entity work.decode(Behavioral) 
+					port map (
+					processor_enable => processor_enable,
+					opcode => instruction(31 downto 26),
 					reg_dest => reg_dest,
 					branch => branch,
 					mem_to_reg => mem_to_reg,
@@ -211,8 +218,7 @@ Control: entity work.Control(Behavioral)
 					mem_write_enable => dmem_write_enable,
 					alu_src => alu_src,
 					reg_write_enable => reg_write_enable,
-					jump => jump,
-                    update_pc => update_pc
+					jump => jump
 					);
 					
 
