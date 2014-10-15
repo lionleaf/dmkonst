@@ -14,6 +14,7 @@ architecture behavior of tb_control is
         ; processor_enable : in   std_logic
         ; opcode           : in   std_logic_vector(5 downto 0)
         ; update_pc        : out  std_logic
+        ; write_enable     : out  std_logic
         );
     end component;
 
@@ -25,7 +26,8 @@ architecture behavior of tb_control is
     signal opcode           : std_logic_vector(5 downto 0) := (others => '0');
 
     --outputs
-    signal update_pc : std_logic;
+    signal update_pc    : std_logic;
+    signal write_enable : std_logic;
 
     -- clock period definitions
     constant clk_period : time := 10 ns;
@@ -40,6 +42,7 @@ begin
             , processor_enable => processor_enable
             , opcode => opcode
             , update_pc => update_pc
+            , write_enable => write_enable
             );
 
     -- clock process definitions
