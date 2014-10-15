@@ -2,9 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.defs.all;
  
-entity tb_decode is end;
+entity tb_control is end;
  
-architecture behavior of tb_decode is 
+architecture behavior of tb_control is 
 
     -- component declaration for the unit under test (uut)
     component control
