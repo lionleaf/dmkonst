@@ -74,9 +74,12 @@ begin
             opcode <= opcode_in;
 
             wait for clk_period;
-
             report "opcode: "& opcode_desc;
-            check(update_pc = '0', "update_pc is high");
+            for i in 1 to 10 loop
+                check(update_pc = '0', "update_pc is high" & integer'image(i) & " cycles after reset");
+                wait for clk_period;
+            end loop;
+
         end procedure check_disabled;
 
     begin
