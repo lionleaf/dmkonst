@@ -202,7 +202,7 @@ PC: entity work.PC(Behavioral)
 Control: entity work.Control(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
-					clk => clk, reset => reset,
+					clk => clk, reset => reset, processor_enable => processor_enable,
 					opcode => instruction(31 downto 26),
 					reg_dest => reg_dest,
 					branch => branch,
