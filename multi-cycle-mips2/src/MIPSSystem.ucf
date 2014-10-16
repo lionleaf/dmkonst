@@ -1,0 +1,24 @@
+## Part of TDT4255 Computer Design laboratory exercises
+## Group for Computer Architecture and Design
+## Department of Computer and Information Science
+## Norwegian University of Science and Technology
+
+## MIPSSystem.ucf
+## User constraints file for exercises 1 and 2
+
+#  Avnet Spartan-6 LX16 Evaluation Board
+Net UART_Rx LOC=H13 | IOSTANDARD = LVCMOS33;
+Net UART_Tx LOC=H14 | IOSTANDARD = LVCMOS33;
+Net leds<0> LOC=J13 | IOSTANDARD = LVCMOS33;
+Net leds<1> LOC=K14 | IOSTANDARD = LVCMOS33;
+Net leds<2> LOC=U17 | IOSTANDARD = LVCMOS33;
+Net leds<3> LOC=U18 | IOSTANDARD = LVCMOS33;
+
+Net clk TNM_NET = sys_clk_pin;
+TIMESPEC TS_sys_clk_pin = PERIOD sys_clk_pin 24 MHz;
+Net clk TNM_NET = sys_clk_pin  |  LOC=K15 | IOSTANDARD = LVCMOS33;
+
+Net reset TIG;
+Net reset LOC=H18 | IOSTANDARD = LVCMOS33;
+
+CONFIG VCCAUX = "3.3" ;
