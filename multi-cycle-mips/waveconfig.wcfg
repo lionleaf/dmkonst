@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="/home/lionleaf/projects/dmkonst/multi-cycle-mips/tb_MIPSProcessor_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="/opt/dmlab/home/aleksanw/dmkonst/multi-cycle-mips/tb_MIPSProcessor_isim_beh.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="defs" />
             <top_module name="numeric_std" />
@@ -16,7 +16,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="23" />
+   <WVObjectSize size="21" />
    <wvobject fp_name="/tb_mipsprocessor/processor_enable" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">processor_enable</obj_property>
       <obj_property name="ObjectShortName">processor_enable</obj_property>
@@ -36,16 +36,8 @@
       <obj_property name="ElementShortName">next_pc[7:0]</obj_property>
       <obj_property name="ObjectShortName">next_pc[7:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mipsprocessor/Processor/imem_address" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">imem_address[7:0]</obj_property>
-      <obj_property name="ObjectShortName">imem_address[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mipsprocessor/proc_imem_address" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">proc_imem_address[7:0]</obj_property>
-      <obj_property name="ObjectShortName">proc_imem_address[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mipsprocessor/Processor/Control/opcode" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">opcode[5:0]</obj_property>
