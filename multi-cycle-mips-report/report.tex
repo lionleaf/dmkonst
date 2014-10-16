@@ -1,0 +1,199 @@
+% Label protokoll:
+% s: (section)
+% ss: (subsection)
+% fig: (figure)
+% eq: (equation)
+% t: (table)
+
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+
+% Standard
+\usepackage[latin1]{inputenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{parskip}
+
+% Not that standard
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\usepackage[toc,page]{appendix}
+\usepackage{amssymb}
+
+
+% Start the document
+\begin{document}
+
+%----------------------------------------------
+%                 Titlepage
+%----------------------------------------------
+\begin{titlepage} 
+
+\begin{center}
+
+
+% Upper part of the titlepage
+\includegraphics[width=0.15\textwidth]{icons/ntnu.jpg}\\[1cm]    
+
+\textsc{Norwegian University of Technology and Science}\\[1.5cm]
+
+\textsc{\Large Report \\Lab Exercise 1}\\[0.5cm]
+
+
+
+% Author
+\begin{minipage}{0.4\textwidth}
+\begin{center}
+
+ \large
+\emph{}\\
+\textsc{Wasaznik}, Aleksander \\
+\textsc{Selvik}, Andreas L{\o}ve  \\
+\textsc{Kulia} ,Geir 
+
+
+
+\end{center} 
+
+\end{minipage}
+
+
+ 
+\begin{minipage}{0.4\textwidth}
+
+\end{minipage}
+
+\vfill
+TDT4255 Computer Architecture \\
+Computer Architecture and Design Group \\
+Department of Computer and Information Science \\
+{\large \today}
+
+\end{center}
+\pagenumbering{roman} % Set roman page numbers
+\end{titlepage}
+
+    \newpage
+
+\begin{titlepage}
+	\large
+	\begin{center}
+
+\textsc{\Large Report \\Lab Exercise 1}\\[0.5cm]
+
+	\end{center}
+
+\end{titlepage}
+
+
+
+\newpage
+
+%----------------------------------------------
+%                 Abstract
+%----------------------------------------------
+
+\section*{Abstract}
+\label{Abstract}
+
+\input{sections/abstract.tex}
+ 
+\newpage
+
+%----------------------------------------------
+%                 Contents
+%----------------------------------------------
+
+
+%\tableofcontents
+
+
+\clearpage
+
+\pagenumbering{arabic}
+
+
+%----------------------------------------------
+%                 Introduction
+%----------------------------------------------
+
+\section{Introduction}
+	\label{s:Introduction}
+
+\input{sections/introduction.tex}
+   
+\clearpage
+
+%----------------------------------------------
+%                 Solution
+%----------------------------------------------
+\section{Solution Description}
+	\label{s:solution}
+	
+	\input{sections/solution.tex}
+	
+\clearpage
+
+
+%----------------------------------------------
+%          Implementation and tools
+%----------------------------------------------
+\section{Implementation and tools}
+	\label{s:tools}
+	
+	\input{sections/tools.tex}
+\clearpage
+
+
+%----------------------------------------------
+%             Test and results
+%----------------------------------------------
+\section{Tests and results}
+	\label{s:results}
+	\input{sections/test-and-results.tex}
+\clearpage
+
+%----------------------------------------------
+%                 Discussion
+%----------------------------------------------
+\section{Tests and results}
+	\label{s:tests}
+
+\input{sections/discussion.tex}
+\clearpage
+
+
+%----------------------------------------------
+%                 Conclusion
+%----------------------------------------------
+\section{Conclusion}
+	\label{s:conclusion}
+
+\input{sections/conclusion.tex}
+\clearpage
+
+
+%----------------------------------------------
+%                 Bibliography
+%----------------------------------------------
+
+\clearpage
+\section{References}
+
+\begin{thebibliography}{9}
+
+
+%\bibitem{teoriForsterker}
+   % \emph{Boken}, Hvem har publisert, Naar er det publisert, hvilket sidetall
+
+\bibitem{compendium}
+   \emph{Lab Exercises in TDT4255 Computer Architecture}, Computer ArchitFeackturlteeat nfodrDinefsoigrnmGasrjounpsteknologi, Department of Computer and Information Science, October 7, 2014
+   
+   \end{thebibliography}
+
+\end{document}
