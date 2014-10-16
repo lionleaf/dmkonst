@@ -34,8 +34,7 @@ entity PC is
 		ADDR_WIDTH : integer := 8;
 		DATA_WIDTH : integer := 32
 	);
-    Port ( clk : in  std_logic;
-           reset : in  std_logic;
+    Port ( reset : in  std_logic;
            update_pc : in std_logic;
            next_pc : in  std_logic_vector (ADDR_WIDTH - 1 downto 0);
            current_pc : out  std_logic_vector (ADDR_WIDTH - 1 downto 0));
@@ -44,7 +43,7 @@ end PC;
 architecture Behavioral of PC is
 begin
 
-process (clk, reset, update_pc)
+process (reset, update_pc)
 begin
     if (reset = '1') then
         current_PC <= (others => '0');

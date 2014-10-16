@@ -35,8 +35,8 @@ entity Registers is
 		DATA_WIDTH : integer := 32
 	);
     Port ( 
-		clk, reset : in std_logic;
-		read_reg_1 : in  STD_LOGIC_VECTOR (4 downto 0);
+      clk       : in std_logic;
+	  read_reg_1 : in  STD_LOGIC_VECTOR (4 downto 0);
       read_reg_2 : in  STD_LOGIC_VECTOR (4 downto 0);
       write_reg : in  STD_LOGIC_VECTOR (4 downto 0);
       write_data : in  STD_LOGIC_VECTOR (31 downto 0);
