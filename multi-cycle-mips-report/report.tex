@@ -24,6 +24,7 @@
 \usetikzlibrary{arrows,automata}
 \usepackage[toc,page]{appendix}
 \usepackage{amssymb}
+\usepackage{subfiles}
 
 
 % Start the document
@@ -101,7 +102,7 @@ Department of Computer and Information Science \\
 \section*{Abstract}
 \label{Abstract}
 
-\input{sections/abstract.tex}
+\subfile{sections/abstract.tex}
  
 \newpage
 
@@ -125,7 +126,7 @@ Department of Computer and Information Science \\
 \section{Introduction}
 	\label{s:Introduction}
 
-\input{sections/introduction.tex}
+\subfile{sections/introduction.tex}
    
 \clearpage
 
@@ -135,7 +136,7 @@ Department of Computer and Information Science \\
 \section{Solution Description}
 	\label{s:solution}
 	
-	\input{sections/solution.tex}
+	\subfile{sections/solution.tex}
 	
 \clearpage
 
@@ -146,7 +147,7 @@ Department of Computer and Information Science \\
 \section{Implementation and tools}
 	\label{s:tools}
 	
-	\input{sections/tools.tex}
+	\subfile{sections/tools.tex}
 \clearpage
 
 
@@ -155,7 +156,7 @@ Department of Computer and Information Science \\
 %----------------------------------------------
 \section{Tests and results}
 	\label{s:results}
-	\input{sections/test-and-results.tex}
+	\subfile{sections/test-and-results.tex}
 \clearpage
 
 %----------------------------------------------
@@ -164,7 +165,7 @@ Department of Computer and Information Science \\
 \section{Tests and results}
 	\label{s:tests}
 
-\input{sections/discussion.tex}
+\subfile{sections/discussion.tex}
 \clearpage
 
 
@@ -174,7 +175,7 @@ Department of Computer and Information Science \\
 \section{Conclusion}
 	\label{s:conclusion}
 
-\input{sections/conclusion.tex}
+\subfile{sections/conclusion.tex}
 \clearpage
 
 
