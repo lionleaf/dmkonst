@@ -45,50 +45,63 @@ entity Control is
 end control;
 
 architecture Behavioral of Control is
-    type state_t is (initial_state, first_fetch, fetch, execute, stall, error_s);  --type of state machine.
-    signal current_s, next_s: state_t;
+    type state_t is (disabled, first_fetch, fetch, execute, stall);  --type of state machine.
+    signal state: state_t;
 begin
 
-process (clk,reset, processor_enable)
+process (clk)
 begin
- if (reset='1' or processor_enable = '0') then
-  current_s <= initial_state;  --default state on reset.
-elsif (rising_edge(clk)) then
-  current_s <= next_s;   --state change.
-end if;
+
+    
+    if rising_edge(clk) then
+        case state is
+            when disabled =>
+                state <= first_fetch;
+            when first_fetch =>
+                state <= execute;
+            when fetch =>
+                state <= execute;
+            when execute =>
+                if opcode = "100011" or opcode = "101011" then
+                    state <= stall;
+                else 
+                    state <= fetch;
+                end if;
+            when stall =>
+                state <= fetch;
+        end case;
+        
+        if reset = '1' then
+            state <= disabled;
+        end if;
+        
+        if processor_enable = '0' then
+            state <= disabled;
+        end if;
+    end if;
 end process;
 
-process (current_s, opcode)
-begin
-    update_pc <= '0';
-    write_enable <= '0';
 
-    case current_s is
-    when initial_state =>
-        next_s <= first_fetch;
-    when first_fetch =>
-        next_s <= execute;
-    when fetch =>
-        next_s <= execute;
-        update_pc <= '1';
-    when execute =>
-        write_enable <= '1';
-        --If lw or sw stall one cycle
-        if opcode = "100011" or opcode = "101011" then
-           next_s <= stall;
-        else
-            next_s <= fetch;
-        end if; 
-    when stall =>
-        write_enable <= '1';
-        if(processor_enable = '1') then
-            next_s <= fetch;
-        else
-            next_s <= stall;
-        end if;
-    when error_s =>
-        --Do not proceed. Light LED
+process (state)
+begin
+    case state IS
+        when disabled =>
+            update_pc <= '0';
+            write_enable <= '0';
+        when first_fetch =>
+            update_pc <= '0';
+            write_enable <= '0';
+        when fetch =>
+            update_pc <= '1';
+            write_enable <= '0';
+        when execute =>
+            update_pc <= '0';
+            write_enable <= '1';
+        when stall =>
+            update_pc <= '0';
+            write_enable <= '1';
     end case;
- end process;
+end process;
+ 
 
 end Behavioral;

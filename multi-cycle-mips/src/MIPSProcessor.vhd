@@ -41,8 +41,8 @@ architecture Behavioral of MIPSProcessor is
 
 	signal alu_data_b	: std_logic_vector(DATA_WIDTH - 1 downto 0);
 	signal alu_result	: signed(DATA_WIDTH - 1 downto 0);
-	signal alu_op : op_t;
-	signal alu_zero : boolean;
+	signal alu_op       : op_t;
+	signal alu_zero     : boolean;
 	
 	signal imm_data_extended : std_logic_vector(DATA_WIDTH - 1 downto 0);
     signal imm_addr_extended : std_logic_vector(ADDR_WIDTH - 1 downto 0);
@@ -171,7 +171,7 @@ end process alu_control;
 Registers: entity work.Registers(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
-					clk => clk, reset => reset,
+					clk => clk,
 					read_reg_1 	=> instruction(25 downto 21),
 					read_reg_2 	=> instruction(20 downto 16),
 					write_reg		=> write_reg_addr,
@@ -194,7 +194,7 @@ ALU: entity work.ALU(Behavioral)
 PC: entity work.PC(Behavioral) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
-					clk => clk, reset => reset,
+					reset => reset,
 					current_PC	=> current_PC, 
 					next_PC 	=> next_PC,
                     update_pc   => update_pc
