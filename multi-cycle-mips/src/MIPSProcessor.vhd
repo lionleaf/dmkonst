@@ -172,6 +172,7 @@ Registers: entity work.Registers(Behavioral)
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
 					clk => clk,
+          reset => reset,
 					read_reg_1 	=> instruction(25 downto 21),
 					read_reg_2 	=> instruction(20 downto 16),
 					write_reg		=> write_reg_addr,
@@ -195,6 +196,7 @@ PC: entity work.PC(Behavioral)
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
 					reset => reset,
+          clk => clk,
 					current_PC	=> current_PC, 
 					next_PC 	=> next_PC,
                     update_pc   => update_pc

@@ -36,6 +36,7 @@ entity Registers is
 	);
     Port ( 
       clk       : in std_logic;
+      reset       : in std_logic;
 	  read_reg_1 : in  STD_LOGIC_VECTOR (4 downto 0);
       read_reg_2 : in  STD_LOGIC_VECTOR (4 downto 0);
       write_reg : in  STD_LOGIC_VECTOR (4 downto 0);
@@ -72,7 +73,10 @@ begin
 
     process (clk) begin
         if rising_edge(clk) then
-            if reg_write = '1' then
+          if reset = '1' then
+              regfile <= regfile_reset;
+
+            elsif reg_write = '1' then
                 regfile(to_integer(unsigned(write_reg))) <= write_data;
             end if;
         end if;
