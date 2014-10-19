@@ -7,13 +7,12 @@ entity decode is
         ( opcode           : in   std_logic_vector(5 downto 0)
         ; write_enable     : in   std_logic
         ; reg_dest         : out  std_logic
-        ; branch           : out  std_logic
+        ; pc_control       : out  pc_control_t
         ; mem_to_reg       : out  std_logic
         ; alu_override     : out  alu_override_t
         ; mem_write_enable : out  std_logic
         ; alu_src          : out  std_logic
         ; reg_write_enable : out  std_logic
-        ; jump             : out  std_logic
         );
 end decode;
 
@@ -24,13 +23,12 @@ begin
     begin
         --default values
         reg_dest          <= '0';
-        branch            <= '0';
+        pc_control        <= step;
         mem_to_reg        <= '0';
         mem_write_enable  <= '0';
         alu_src           <= '0';
         alu_override      <= override_disabled;
         reg_write_enable  <= '0';
-        jump              <= '0';
    
    
         case opcode is
@@ -41,13 +39,12 @@ begin
 
             when "000100" => -- beq branch if equal
                 reg_dest <= '1';
-                branch <= '1';
+                pc_control <= branch;
                 alu_override <= override_sub;
 
             when "000010" => -- jump
                 reg_dest <= '1';
-                jump <= '1';
-
+                pc_control <= jump;
             when "100011" => -- lw load word
                 mem_to_reg <= '1';
                 alu_override <= override_add;
