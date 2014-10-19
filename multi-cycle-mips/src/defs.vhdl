@@ -11,7 +11,7 @@ package defs is
         , op_slt
         , op_sll16
         );
-        
+
     type alu_override_t is
         ( override_add
         , override_sub
@@ -20,14 +20,14 @@ package defs is
         );
 
     function to_op_t (opcode : std_logic_vector(5 downto 0))
-                      return op_t;    
+                      return op_t;
 end package defs;
 
 package body defs
     is function to_op_t (opcode : std_logic_vector(5 downto 0))
-                         return op_t is 
-    begin 
-        case opcode is 
+                         return op_t is
+    begin
+        case opcode is
            when "100000" => return op_add;
            when "100010" => return op_sub;
            when "101010" => return op_slt;
