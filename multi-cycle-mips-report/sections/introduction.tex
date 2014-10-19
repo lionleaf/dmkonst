@@ -1,0 +1,26 @@
+\documentclass[../report.tex]{subfiles}
+\begin{document}
+This report explains the implementation of a multi-cycle processor in VHDL. The processor was designed with a simplified version of Microprocessor without Interlocked Pipeline Stages (MIPS) instruction set. 
+
+\section{Requirements}
+
+The main requirement for the design of the processor was that it should use MIPS instruction set with an encoding format described in the compendium appendix \cite[p. 64]{compendium}. The processor should have instructions for each of the classes described in Table \ref{t:req}.
+
+\begin{table}[H]
+     \caption {Requirements}
+	\label{t:req}
+    \centering
+    \begin{tabular} {l l}
+       	 \bf Arithmetic logic unit (ALU): & ADD, SUB, SLT, AND, OR instructions \\
+       	 \bf Branch: & Conditional branch instruction \\
+	     \bf Memory: & LOAD and STORE instructions  \\
+	     \bf Load Immediate (LDI): & load the register with the given value \\
+	     \bf Jump instruction: & J-jump to the specified address \\
+
+    \end{tabular}
+\end{table}
+
+
+The design was also required testing by several test benches and then run on an FPGA. The requirements are described in full details in the compendium \cite[p. 44]{compendium}
+
+\end{document}

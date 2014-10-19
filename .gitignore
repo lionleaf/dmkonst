@@ -63,3 +63,13 @@ xilinxsim.ini
 */xlnx_auto_0_xdb/*
 */xst/*
 */netgen/*
+*,cgc
+*.cgp
+*.xmsgs
+*.pdf
+*.asy
+*.v
+*.veo
+*.vho
+*.xco
+*.tcl
