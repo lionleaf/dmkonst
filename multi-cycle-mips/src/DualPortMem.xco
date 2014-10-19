@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 12.4
-# Date: Tue Oct  7 16:49:31 2014
+# Date: Sun Oct 19 14:55:45 2014
 #
 ##############################################################
 #
@@ -17,7 +17,7 @@ SET addpads = false
 SET asysymbol = true
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = Verilog
+SET designentry = VHDL
 SET device = xc6slx16
 SET devicefamily = spartan6
 SET flowvendor = Foundation_ISE
@@ -90,4 +90,4 @@ CSET write_width_a=32
 CSET write_width_b=8
 # END Parameters
 GENERATE
-# CRC: 1bc8cef6
+# CRC: bde19e92

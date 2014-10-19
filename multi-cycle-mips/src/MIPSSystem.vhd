@@ -64,6 +64,7 @@ architecture Behavioral of MIPSSystem is
 begin
 -- instantiate the processor
 MIPSProcInst:	entity work.MIPSProcessor(Behavioral) 
+--MIPSProcInst:	entity work.MIPSProcessor(DummyArch) 
 					generic map (ADDR_WIDTH => ADDR_WIDTH, DATA_WIDTH => DATA_WIDTH) 
 					port map (
 						clk => clk, reset => processorReset,
