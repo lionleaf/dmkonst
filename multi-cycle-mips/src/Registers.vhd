@@ -33,31 +33,32 @@ begin
 
     process (clk, regfile, read_reg_1)
     begin
-        if to_integer(unsigned(read_reg_1)) = 0 then
-            read_data_1 <= (others => '0');  -- Hardwire r0 to 0
-        else
-            read_data_1 <= regfile(to_integer(unsigned(read_reg_1)));
+        if rising_edge(clk) then
+            if to_integer(unsigned(read_reg_1)) = 0 then
+                read_data_1 <= (others => '0');  -- Hardwire r0 to 0
+            else
+                read_data_1 <= regfile(to_integer(unsigned(read_reg_1)));
+            end if;
         end if;
     end process;
     
     
     process (clk, regfile, read_reg_2)
     begin
-        if read_reg_2 = "00000" then
-            read_data_2 <= (others => '0');  -- Hardwire r0 to 0
-        else
-            read_data_2 <= regfile(to_integer(unsigned(read_reg_2)));
-        end if;
-    end process;   
+       if rising_edge(clk) then
+            if read_reg_2 = "00000" then
+                read_data_2 <= (others => '0');  -- Hardwire r0 to 0
+            else
+                read_data_2 <= regfile(to_integer(unsigned(read_reg_2)));
+            end if;
+       end if;
+    end process;
     
 
     process (clk)
     begin
         if rising_edge(clk) then
-          if reset = '1' then
-              regfile <= regfile_reset;
-
-            elsif write_enable = '1' then
+            if write_enable = '1' then
                 regfile(to_integer(unsigned(write_reg))) <= write_data;
             end if;
         end if;
