@@ -2,7 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package defs is
-
+    subtype data_t is std_logic_vector(31 downto 0);
+    subtype addr_t is std_logic_vector(7 downto 0);
+    
     type alu_funct_t is
         ( alu_add
         , alu_sub
@@ -10,6 +12,12 @@ package defs is
         , alu_or
         , alu_slt
         , alu_sll16
+        );
+    
+    type pc_control_t is
+        ( step
+        , jump
+        , branch
         );
 
     type alu_override_t is

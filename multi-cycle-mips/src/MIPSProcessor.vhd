@@ -78,7 +78,6 @@ begin
                 )
             port map
                 ( clk => clk
-                , reset => reset
                 , read_reg_1 => rs
                 , read_reg_2 => rt
                 , write_reg => write_reg
