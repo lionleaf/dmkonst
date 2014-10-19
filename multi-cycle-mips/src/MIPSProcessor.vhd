@@ -44,7 +44,7 @@ architecture Behavioral of MIPSProcessor is
     signal read_reg_2_data : data_t;
 
     -- alu IOs
-    signal alu_op          : op_t;
+    signal alu_function    : alu_funct_t;
     signal alu_zero        : boolean;
     signal alu_result      : signed(data_width - 1 downto 0);
     signal alu_muxed_input : data_t;
@@ -101,7 +101,7 @@ begin
                 ( data_width => data_width
                 )
             port map
-                ( operator => alu_op
+                ( operator => alu_function
                 , operand_left => signed(read_reg_1_data)
                 , operand_right => signed(alu_muxed_input)
                 , result_is_zero => alu_zero
@@ -151,6 +151,17 @@ begin
                 )
             ;
 
+    alu_control:
+        entity work.alu_control
+            port map
+                ( instruction_funct => instruction(5 downto 0)
+                , funct_override  => alu_override
+                , alu_function  => alu_function
+                )
+            ;
+
+
+
     incremented_PC <= std_logic_vector(unsigned(current_PC) + 1);
 
     jump_addr <= incremented_PC(ADDR_WIDTH - 1 downto 26) & instruction(25 downto 0)
@@ -183,10 +194,7 @@ begin
                       when mem_to_reg = '1'
                       else std_logic_vector(alu_result);
 
-    with alu_override
-    select alu_op <= op_sub when override_sub,
-                     op_add when override_add,
-                     op_sll16 when override_sll16,
-                     to_op_t(instruction(5 downto 0)) when others;
+    
+    
 
 end Behavioral;
