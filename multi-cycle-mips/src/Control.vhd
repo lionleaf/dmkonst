@@ -20,7 +20,7 @@ end control;
 
 architecture Behavioral of Control is
 
-    type state_t is (disabled, first_fetch, fetch, execute, stall);  --type of state machine.
+    type state_t is (disabled, fetch, execute, stall);  --type of state machine.
     signal state: state_t;
 
 begin
@@ -30,9 +30,7 @@ begin
         if rising_edge(clk) then
             case state is
                 when disabled =>
-                    state <= first_fetch;
-                when first_fetch =>
-                    state <= execute;
+                    state <= fetch;
                 when fetch =>
                     state <= execute;
                 when execute =>
@@ -60,9 +58,6 @@ begin
     begin
         case state IS
             when disabled =>
-                update_pc <= '0';
-                write_enable <= '0';
-            when first_fetch =>
                 update_pc <= '0';
                 write_enable <= '0';
             when fetch =>
