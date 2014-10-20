@@ -63,8 +63,6 @@ architecture Behavioral of MIPSProcessor is
 
     -- internal signals
     signal imm_data_extended : data_t;
-    signal imm_addr_extended : addr_t;
-
 
 begin
 

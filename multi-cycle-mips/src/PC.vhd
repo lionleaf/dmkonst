@@ -43,7 +43,7 @@ begin
     begin
         if (reset = '1') then
             PC <= (others => '0');
-        elsif falling_edge(clk) and update_pc = '1' then
+        elsif rising_edge(clk) and update_pc = '1' then
             PC <= next_PC;
         end if;
     end process;

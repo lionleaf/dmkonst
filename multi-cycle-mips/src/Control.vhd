@@ -56,7 +56,7 @@ begin
     end process;
 
 
-    process (state)
+    process (state, opcode)
     begin
         case state IS
             when disabled =>
@@ -66,13 +66,18 @@ begin
                 update_pc <= '0';
                 write_enable <= '0';
             when fetch =>
-                update_pc <= '1';
+                update_pc <= '0';
                 write_enable <= '0';
             when execute =>
-                update_pc <= '0';
+                if opcode = "100011" or opcode = "101011" then
+                    update_pc <= '0';
+                else 
+                    update_pc <= '1';
+                end if;
+                
                 write_enable <= '1';
             when stall =>
-                update_pc <= '0';
+                update_pc <= '1';
                 write_enable <= '1';
         end case;
     end process;
