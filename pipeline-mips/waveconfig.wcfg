@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/opt/dmlab/home/aleksanw/dmkonst/multi-cycle-mips/tb_MIPSProcessor_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="defs" />
+            <top_module name="numeric_std" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_textio" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="tb_mipsprocessor" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="21" />
+   <wvobject fp_name="/tb_mipsprocessor/processor_enable" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">processor_enable</obj_property>
+      <obj_property name="ObjectShortName">processor_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/PC/current_pc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">current_pc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">current_pc[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff0000</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/PC/next_pc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">next_pc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">next_pc[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/Control/opcode" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">opcode[5:0]</obj_property>
+      <obj_property name="ObjectShortName">opcode[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/Control/state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/alu_src" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">alu_src</obj_property>
+      <obj_property name="ObjectShortName">alu_src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/Registers/regfile[1]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[1]</obj_property>
+      <obj_property name="ObjectShortName">regfile[1]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/Registers/regfile[2]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[2]</obj_property>
+      <obj_property name="ObjectShortName">regfile[2]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/Registers/regfile[3]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[3]</obj_property>
+      <obj_property name="ObjectShortName">regfile[3]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/ALU/result" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">result[31:0]</obj_property>
+      <obj_property name="ObjectShortName">result[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/decode/branch" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">branch</obj_property>
+      <obj_property name="ObjectShortName">branch</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/ALU/result_is_zero" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">result_is_zero</obj_property>
+      <obj_property name="ObjectShortName">result_is_zero</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/ALU/operator" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">operator</obj_property>
+      <obj_property name="ObjectShortName">operator</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/ALU/operand_left" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">operand_left[31:0]</obj_property>
+      <obj_property name="ObjectShortName">operand_left[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/ALU/operand_right" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">operand_right[31:0]</obj_property>
+      <obj_property name="ObjectShortName">operand_right[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/dmem_address" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dmem_address[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_address[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/dmem_data_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dmem_data_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_data_in[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/dmem_data_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dmem_data_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_data_out[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/decode/write_enable" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">write_enable</obj_property>
+      <obj_property name="ObjectShortName">write_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mipsprocessor/Processor/decode/opcode" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">opcode[5:0]</obj_property>
+      <obj_property name="ObjectShortName">opcode[5:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+</wave_config>
