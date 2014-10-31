@@ -26,13 +26,16 @@ architecture Behavioral of PC is
     signal branch_addr        : addr_t;
     signal next_PC            : addr_t;
     signal immediate_resized  : addr_t;
+    signal incremented_PC_wait: addr_t;
 begin
 
-    incremented_PC <= std_logic_vector(unsigned(PC) + 1);
+    incremented_PC <= std_logic_vector(unsigned(PC) + 1) when rising_edge(clk);
     
-    immediate_resized <= std_logic_vector(resize(signed(immediate), addr_width));
+    incremented_PC_wait <= incremented_PC when falling_edge(clk);
     
-    branch_addr <= std_logic_vector(signed(incremented_PC) + signed(immediate_resized));
+    immediate_resized <= std_logic_vector(resize(signed(immediate), addr_width))when rising_edge(clk);
+    
+    branch_addr <= std_logic_vector(signed(incremented_PC_wait) + signed(immediate_resized)) when rising_edge(clk);
     
     
     next_PC <=  branch_addr       when pc_control = branch and alu_zero
@@ -41,7 +44,7 @@ begin
 
     process (reset, clk, update_pc)
     begin
-        if (reset = '1') then
+        if reset = '1' then
             PC <= (others => '0');
         elsif rising_edge(clk) and update_pc = '1' then
             PC <= next_PC;
