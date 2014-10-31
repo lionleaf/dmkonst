@@ -24,7 +24,13 @@ architecture Behavioral of Control is
     signal state: state_t;
 
 begin
-
+    
+    process(clk)
+    begin
+        
+    end process;
+    
+    
     process (clk)
     begin
         if rising_edge(clk) then
