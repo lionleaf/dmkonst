@@ -36,10 +36,10 @@ begin
             data_1_out          <= (others => '0');
             data_2_out          <= (others => '0');
         else 
-            PC_plus_one_out     <= data_1_in;
+            PC_plus_one_out     <= PC_plus_one_in;
             instructions_out    <= instructions_in;
-            data_1_out          <= data_1_out;
-            data_2_out          <= data_2_out;
+            data_1_out          <= data_1_in;
+            data_2_out          <= data_2_in;
         end if;
     end if;    
     end process;
