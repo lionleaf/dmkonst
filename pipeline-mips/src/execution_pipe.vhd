@@ -20,8 +20,8 @@ entity execution_pipe is
         ; alu_result_out    : buffer    signed(data_width - 1 downto 0) := to_signed(0, data_width)
         ; data_2_in         : in        std_logic_vector (31 downto 0)
         ; data_2_out        : out       std_logic_vector (31 downto 0)
-        ; instructions_in   : in        std_logic_vector (31 downto 0)
-        ; instructions_out  : out       std_logic_vector (31 downto 0)
+        ; instructions_in   : in        std_logic_vector (4 downto 0)
+        ; instructions_out  : out       std_logic_vector (4 downto 0)
         );
 end execution_pipe;
 

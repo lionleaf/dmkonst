@@ -91,7 +91,7 @@ architecture Behavioral of pipelined_processor is
     
     -- Execution
     
-    signal instruction_execution_in         : std_logic_vector(31 downto 0);
+    signal instruction_execution_in         : word_t;
     
     alias rt_execution_in                   : reg_number    is instruction_execution_in(20 downto 16);
     alias rd_execution_in                   : reg_number    is instruction_execution_in(15 downto 11);
@@ -103,7 +103,7 @@ architecture Behavioral of pipelined_processor is
     signal alu_result_execute_out           : signed (data_width - 1 downto 0) := to_signed(0, data_width);
     signal branch_address_execute           : addr_t;
     
-    signal register_destination_execution   : addr_t;
+    signal register_destination_execution   : reg_number;
     
     signal register_destination             : std_logic;
     
@@ -208,7 +208,7 @@ begin
     branch_address_select: 
         entity work.branch_address_select
             port map
-                ( left_oprand   => instruction_execution_in     
+                ( left_oprand   => instruction_execution_in(7 downto 0)     
                 , right_oprand  => incremented_PC_fetch_in
                 , result        => branch_address_execute
                 )
@@ -224,7 +224,7 @@ begin
                 , zero_in                   => alu_zero_execute_out
                 , zero_out                  => alu_zero_memory_out
                 , alu_result_in             => alu_result_execute_out
-                , unsigned(alu_result_out)  => dmem_address
+                , alu_result_out            => alu_result
                 , data_2_in                 => instruction_execution_in
                 , data_2_out                => dmem_data_out
                 , instructions_in           => register_destination_execution
@@ -248,10 +248,10 @@ begin
                 , clk              => clk
                 , read_data_in     => data_2_execute
                 , read_data_out    => write_reg_data
-                , unsigned(alu_result_in)    => dmem_address
+                , alu_result_in    => alu_result
                 , alu_result_out   => alu_result_write_back_in
                 , instructions_in  => register_destination_memory
-                , instructions_out => write_reg_data
+                , instructions_out => write_reg
             );
     
     -- Others
@@ -303,6 +303,7 @@ begin
     write_reg_data <= dmem_data_in
                       when mem_to_reg = '1'
                       else std_logic_vector(alu_result);
+    dmem_address  <= std_logic_vector(alu_result(7 downto 0));
 
     
     

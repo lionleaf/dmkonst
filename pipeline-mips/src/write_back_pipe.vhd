@@ -16,8 +16,8 @@ entity write_back_pipe is
         ;  read_data_out    : out       data_t
         ;  alu_result_in    : buffer    signed (data_width - 1 downto 0) := to_signed(0, data_width)
         ;  alu_result_out   : buffer    signed (data_width - 1 downto 0) := to_signed(0, data_width)
-        ;  instructions_in  : in        std_logic_vector (31 downto 0)
-        ;  instructions_out : out       std_logic_vector (31 downto 0)
+        ;  instructions_in  : in        reg_t
+        ;  instructions_out : out       reg_t
        );
 end write_back_pipe;
 
