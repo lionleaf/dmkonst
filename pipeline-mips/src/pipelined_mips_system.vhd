@@ -22,6 +22,16 @@ end pipelined_processor;
 
 architecture Behavioral of pipelined_processor is
 
+    function to_std_logic(p: boolean)
+    return std_logic
+    is begin
+        if p then
+            return '1';
+        else
+            return '0';
+        end if;
+    end;
+
     subtype reg_number is std_logic_vector(4 downto 0);
 
     subtype opcode_t is std_logic_vector(5 downto 0);
@@ -68,11 +78,44 @@ architecture Behavioral of pipelined_processor is
     signal incremented_PC_fetch     : addr_t;
     signal incremented_PC_fetch_in  : addr_t;
     signal pc_source                : std_logic;
-    signal branch_addr              : addr_t;
+    signal branch_address           : addr_t;
     
     -- decode
     signal incremented_PC_decode    : addr_t;
-   
+    signal instructions_decode_in   : std_logic_vector(31 downto 0);
+    signal read_reg_1_data_decode   : data_t;
+    signal read_reg_2_data_decode   : data_t;
+    
+    signal data_1_execute           : data_t;
+    signal data_2_execute           : data_t;
+    
+    -- Execution
+    
+    signal instruction_execution_in         : std_logic_vector(31 downto 0);
+    
+    alias rt_execution_in                   : reg_number    is instruction_execution_in(20 downto 16);
+    alias rd_execution_in                   : reg_number    is instruction_execution_in(15 downto 11);
+    
+    signal reg_dst_execution                : reg_number;
+    
+    signal alu_zero_execute_out             : boolean := true;
+    
+    signal alu_result_execute_out           : signed (data_width - 1 downto 0) := to_signed(0, data_width);
+    signal branch_address_execute           : addr_t;
+    
+    signal register_destination_execution   : addr_t;
+    
+    signal register_destination             : std_logic;
+    
+    -- Memory
+    
+    signal register_destination_memory      :   reg_number;
+    signal alu_zero_memory_out              :   boolean := true;
+    signal branch                           :   std_logic;
+    
+    -- Write back
+    signal alu_result_write_back_in         :   signed (data_width - 1 downto 0) := to_signed(0, data_width);
+    
 begin
 
     dmem_address  <= std_logic_vector(alu_result(7 downto 0));
@@ -89,9 +132,9 @@ begin
                 ( reset                 => reset
                 , clk                   => clk
                 , pc_source             => pc_source
-                , branch_addr           => branch_addr
+                , branch_addr           => branch_address
                 , PC                    => imem_address
-                , incremented_PC_fetch  => incremented_PC  
+                , incremented_PC        => incremented_PC_fetch  
                 )
             ;
     
@@ -129,16 +172,16 @@ begin
     instruction_decode_pipe:
         entity work.instruction_decode_pipe
             port map
-                ( clk               => clk
-                , reset             => reset
-                , PC_plus_one_in    => incremented_PC_decode
-                , PC_plus_one_out   => incremented_PC_fetch_in
-                , data_1_in         => read_reg_1_data_decode
-                , data_1_out        => data_1_execute
-                , data_2_in         => read_reg_2_data_decode
-                , data_2_out        => data_2_execute
-                , instructions_in   => instructions_decode_in
-                , instructions_out  => instruction_execution_in
+                ( clk                   => clk
+                , reset                 => reset
+                , incremented_PC_in     => incremented_PC_decode
+                , incremented_PC_out    => incremented_PC_fetch_in
+                , data_1_in             => read_reg_1_data_decode
+                , data_1_out            => data_1_execute
+                , data_2_in             => read_reg_2_data_decode
+                , data_2_out            => data_2_execute
+                , instructions_in       => instructions_decode_in
+                , instructions_out      => instruction_execution_in
                 )
             ;
                   
@@ -167,29 +210,33 @@ begin
             port map
                 ( left_oprand   => instruction_execution_in     
                 , right_oprand  => incremented_PC_fetch_in
-                , result        => branch_adress_execute
+                , result        => branch_address_execute
                 )
             ;
 
     execution_pipe:
         entity work.execution_pipe
             port map
-                ( clk               => clk
-                , reset             => reset
-                , sum_in            => branch_adress_execute
-                , sum_out           => branch_adress
-                , zero_in           => alu_zero_execute_out
-                , zero_out          => alu_result_execute_out
-                , alu_result_in     => alu_result_execute_out
-                , alu_result_out    => dmem_address
-                , data_2_in         => instruction_execution_in
-                , data_2_out        => dmem_data_in
-                , instruction
+                ( clk                   => clk
+                , reset                     => reset
+                , sum_in                    => branch_address_execute
+                , sum_out                   => branch_address
+                , zero_in                   => alu_zero_execute_out
+                , zero_out                  => alu_zero_memory_out
+                , alu_result_in             => alu_result_execute_out
+                , unsigned(alu_result_out)  => dmem_address
+                , data_2_in                 => instruction_execution_in
+                , data_2_out                => dmem_data_out
+                , instructions_in           => register_destination_execution
+                , instructions_out          => register_destination_memory
             );
-
+            
+    register_destination_execution  <= rd_execution_in 
+                                    when register_destination = '1'
+                                    else rt_execution_in;
     -- Memory
     
-    pc_source <= branch_adress and branch;
+    pc_source <= to_std_logic(alu_zero_memory_out) and branch;
     
     
     -- Write back
@@ -197,12 +244,14 @@ begin
     write_back_pipe:
         entity work.write_back_pipe
             port map
-                ( read_data_in     => instruction_execution_in
+            (     reset            => reset
+                , clk              => clk
+                , read_data_in     => data_2_execute
                 , read_data_out    => write_reg_data
-                , alu_result_in    => dmem_address
+                , unsigned(alu_result_in)    => dmem_address
                 , alu_result_out   => alu_result_write_back_in
-                , instructions_in  => 
-                , instructions_out =>
+                , instructions_in  => register_destination_memory
+                , instructions_out => write_reg_data
             );
     
     -- Others

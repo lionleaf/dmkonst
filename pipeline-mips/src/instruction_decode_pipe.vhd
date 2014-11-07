@@ -12,8 +12,8 @@ entity instruction_decode_pipe is
     Port
         ( clk               : in      std_logic
         ; reset             : in      std_logic
-        ; PC_plus_one_in    : in      signed (data_width - 1 downto 0) := to_signed(0, data_width)
-        ; PC_plus_one_out   : out     signed (data_width - 1 downto 0) := to_signed(0, data_width)
+        ; incremented_PC_in : in      addr_t
+        ; incremented_PC_out: out     addr_t
         ; data_1_in         : in      STD_LOGIC_VECTOR (31 downto 0)
         ; data_1_out        : out     STD_LOGIC_VECTOR (31 downto 0)
         ; data_2_in         : in      STD_LOGIC_VECTOR (31 downto 0)
@@ -31,12 +31,12 @@ begin
     begin
     if rising_edge(clk) then
         if reset = '1' then -- synchronous reset 
-            PC_plus_one_out     <= (others => '0');
+            incremented_PC_out     <= (others => '0');
             instructions_out    <= (others => '0');
             data_1_out          <= (others => '0');
             data_2_out          <= (others => '0');
         else 
-            PC_plus_one_out     <= PC_plus_one_in;
+            incremented_PC_out  <= incremented_PC_in;
             instructions_out    <= instructions_in;
             data_1_out          <= data_1_in;
             data_2_out          <= data_2_in;
