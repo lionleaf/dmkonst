@@ -1,4 +1,4 @@
-				library ieee;
+library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.defs.all;
@@ -28,7 +28,11 @@ architecture Behavioral of processor is
 	-- is an input from the module instruction-fetch (if).
 	
 	signal incremented_pc_if_out	:	addr_t;
+	signal incremented_pc_id_in	:  addr_t;
+	signal incremented_pc_ex_in	:	addr_t;
+	
 	signal branch_adress_if_in		:	addr_t;
+	
 	signal pc_source					:	std_logic;
 		
 	signal instructions_if_out		:  std_logic_vector (31 downto 0);
@@ -39,6 +43,10 @@ architecture Behavioral of processor is
 	signal data_2_id_out				:	std_logic_vector (31 downto 0);
 	signal data_1_ex_in				:	std_logic_vector (31 downto 0);
 	signal data_2_ex_in				:	std_logic_vector (31 downto 0);
+	
+	signal write_data					:  std_logic_vector (31 downto 0);
+	
+	signal write_register			:  std_logic_vector (4 downto 0);
 	
 	subtype reg_number is std_logic_vector(4 downto 0);
 	
@@ -93,8 +101,8 @@ begin
 	id_to_ex_pipe:
 		entity work.instruction_decode_pipe
 		generic map
-			( data_width => data_width;
-			);
+			( data_width => data_width
+			)
 		port map
 			( clk               => clk
 			, reset             => reset
@@ -127,6 +135,7 @@ begin
 			, alu_zero			=> alu_zero_ex_out
 			, branch_address	=> branch_address_ex_out
 			)
+		;
 
 	write_register_ex_out <= rd_ex_in when register_destination = '1'
 							else	 rt_ex_in;
@@ -136,7 +145,6 @@ begin
 		generic map
         ( data_width : integer := 32
         )
-		;
 		port map
 			( clk               => clk
 			, reset             => reset
@@ -155,7 +163,7 @@ begin
 		
 	--------------- Memory ---------------
 
-	pc_source = branch and alu_zero;
+	pc_source <= branch and alu_zero;
 
 	mem_to_wb_pipe:
 		entity work.write_back_pipe
