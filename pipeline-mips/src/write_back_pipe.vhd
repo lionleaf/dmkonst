@@ -13,11 +13,11 @@ entity write_back_pipe is
        (   clk              : in        std_logic
         ;  reset            : in        std_logic
         ;  read_data_in     : in        word_t
-        ;  read_data_out    : out       word_t
+        ;  read_data_out    : buffer       word_t
         ;  alu_result_in    : in        word_t
         ;  alu_result_out   : buffer    word_t
         ;  instructions_in  : in        reg_t
-        ;  instructions_out : out       reg_t
+        ;  instructions_out : buffer       reg_t
        );
 end write_back_pipe;
 

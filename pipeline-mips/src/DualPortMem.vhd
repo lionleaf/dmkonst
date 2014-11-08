@@ -65,12 +65,12 @@ ENTITY DualPortMem IS
 	wea: in std_logic_vector(0 downto 0);
 	addra: in std_logic_vector(7 downto 0);
 	dina: in std_logic_vector(31 downto 0);
-	douta: out std_logic_vector(31 downto 0);
+	douta: buffer std_logic_vector(31 downto 0);
 	clkb: in std_logic;
 	web: in std_logic_vector(0 downto 0);
 	addrb: in std_logic_vector(9 downto 0);
 	dinb: in std_logic_vector(7 downto 0);
-	doutb: out std_logic_vector(7 downto 0));
+	doutb: buffer std_logic_vector(7 downto 0));
 END DualPortMem;
 
 ARCHITECTURE DualPortMem_a OF DualPortMem IS
@@ -81,12 +81,12 @@ component wrapped_DualPortMem
 	wea: in std_logic_vector(0 downto 0);
 	addra: in std_logic_vector(7 downto 0);
 	dina: in std_logic_vector(31 downto 0);
-	douta: out std_logic_vector(31 downto 0);
+	douta: buffer std_logic_vector(31 downto 0);
 	clkb: in std_logic;
 	web: in std_logic_vector(0 downto 0);
 	addrb: in std_logic_vector(9 downto 0);
 	dinb: in std_logic_vector(7 downto 0);
-	doutb: out std_logic_vector(7 downto 0));
+	doutb: buffer std_logic_vector(7 downto 0));
 end component;
 
 -- Configuration specification 

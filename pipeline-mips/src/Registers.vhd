@@ -15,8 +15,8 @@ entity register_file is
         ; write_reg    : in  STD_LOGIC_VECTOR (4 downto 0)
         ; write_data   : in  STD_LOGIC_VECTOR (31 downto 0)
         ; write_enable : in  STD_LOGIC
-        ; read_data_1  : out  STD_LOGIC_VECTOR (31 downto 0)
-        ; read_data_2  : out  STD_LOGIC_VECTOR (31 downto 0)
+        ; read_data_1  : buffer  STD_LOGIC_VECTOR (31 downto 0)
+        ; read_data_2  : buffer  STD_LOGIC_VECTOR (31 downto 0)
         );
 
 end register_file;

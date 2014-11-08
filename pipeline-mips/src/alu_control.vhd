@@ -6,7 +6,7 @@ use work.defs.all;
 entity alu_control is
     Port   (  instruction_funct : in  STD_LOGIC_VECTOR (5 downto 0)
            ;  funct_override : in alu_override_t
-           ;  alu_function : out alu_funct_t
+           ;  alu_function : buffer alu_funct_t
            );
 end alu_control;
 

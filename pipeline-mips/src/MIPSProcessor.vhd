@@ -14,9 +14,9 @@ entity MIPSProcessor is
         ; imem_data_in      : in  std_logic_vector(data_width-1 downto 0)
         ; imem_address      : buffer std_logic_vector(addr_width-1 downto 0)
         ; dmem_data_in      : in  std_logic_vector(data_width-1 downto 0)
-        ; dmem_address      : out std_logic_vector(addr_width-1 downto 0)
-        ; dmem_data_out     : out std_logic_vector(data_width-1 downto 0)
-        ; dmem_write_enable : out std_logic
+        ; dmem_address      : buffer std_logic_vector(addr_width-1 downto 0)
+        ; dmem_data_out     : buffer std_logic_vector(data_width-1 downto 0)
+        ; dmem_write_enable : buffer std_logic
         );
 end MIPSProcessor;
 

@@ -5,9 +5,9 @@ use work.defs.all;
 
 entity branch_address_select is
     Port 
-        ( operand_left   : in    addr_t
-        ; operand_right  : in    addr_t
-        ; result        : out   addr_t);
+        ( operand_left   : in     addr_t
+        ; operand_right  : in     addr_t
+        ; result         : buffer addr_t);
 end branch_address_select;
 
 architecture Behavioral of branch_address_select is

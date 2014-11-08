@@ -40,7 +40,7 @@ ARCHITECTURE behavior OF tb_alu_control IS
     PORT(
          instruction_funct : IN  std_logic_vector(5 downto 0);
          funct_override : IN  alu_override_t;
-         alu_function : OUT  alu_funct_t
+         alu_function : buffer  alu_funct_t
         );
     END COMPONENT;
     
