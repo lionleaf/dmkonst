@@ -75,14 +75,14 @@ begin
                 ( data_width => data_width
                 )
             port map
-                ( clk => clk
-                , read_reg_1 => rs
-                , read_reg_2 => rt
-                , write_reg => write_reg
-                , write_enable => write_reg_enable
-                , write_data => write_reg_data
-                , read_data_1 => read_reg_1_data
-                , read_data_2 => read_reg_2_data
+                ( clk           => clk
+                , read_reg_1    => rs
+                , read_reg_2    => rt
+                , write_reg     => write_reg
+                , write_enable  => write_reg_enable
+                , write_data    => write_reg_data
+                , read_data_1   => read_reg_1_data
+                , read_data_2   => read_reg_2_data
                 )
             ;
 
