@@ -28,7 +28,7 @@ architecture behavior of tb_alu is
         ( operand_left   : in      data_t
         ; operand_right  : in      data_t
         ; operator       : in      alu_funct_t
-        ; result_is_zero : out     boolean
+        ; result_is_zero : buffer     boolean
         ; result         : buffer  data_t
         );
     end component;

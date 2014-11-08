@@ -14,9 +14,9 @@ entity processor is
         ; imem_data_in      : in  word_t
         ; imem_address      : buffer addr_t
         ; dmem_data_in      : in  word_t
-        ; dmem_address      : out addr_t
+        ; dmem_address      : buffer addr_t
         ; dmem_data_out     : buffer word_t
-        ; dmem_write_enable : out std_logic
+        ; dmem_write_enable : buffer std_logic
         );
 end processor;
 
