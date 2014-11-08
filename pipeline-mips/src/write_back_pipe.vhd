@@ -12,12 +12,12 @@ entity write_back_pipe is
     Port 
        (   clk              : in        std_logic
         ;  reset            : in        std_logic
-        ;  read_data_in     : in        data_t
-        ;  read_data_out    : out       data_t
-        ;  alu_result_in    : buffer    signed (data_width - 1 downto 0) := to_signed(0, data_width)
-        ;  alu_result_out   : buffer    signed (data_width - 1 downto 0) := to_signed(0, data_width)
-        ;  instructions_in  : in        std_logic_vector (31 downto 0)
-        ;  instructions_out : out       std_logic_vector (31 downto 0)
+        ;  read_data_in     : in        word_t
+        ;  read_data_out    : out       word_t
+        ;  alu_result_in    : buffer    word_t
+        ;  alu_result_out   : buffer    word_t
+        ;  instructions_in  : in        word_t
+        ;  instructions_out : out       word_t
        );
 end write_back_pipe;
 

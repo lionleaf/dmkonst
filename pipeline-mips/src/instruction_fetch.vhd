@@ -7,9 +7,9 @@ entity instruction_fetch is
 	port
 			( clk							: in	std_logic
 			; reset					 	: in	std_logic
-			; incremented_pc 			: out	addr_t
-			; branch_adress			: in	addr_t
-			; pc_source					: in 	std_logic
+			; incremented_pc 	: out	addr_t
+			; branch_adress		: in	addr_t
+			; pc_source				: in 	std_logic
 			; pc							: out	addr_t
 			)
 		;
