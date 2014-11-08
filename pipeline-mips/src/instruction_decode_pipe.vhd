@@ -13,13 +13,13 @@ entity instruction_decode_pipe is
         ( clk               : in      std_logic
         ; reset             : in      std_logic
         ; incremented_PC_in : in      addr_t
-        ; incremented_PC_out: out     addr_t
+        ; incremented_PC_out: buffer  addr_t
         ; data_1_in         : in      word_t
-        ; data_1_out        : out     word_t
+        ; data_1_out        : buffer  word_t
         ; data_2_in         : in      word_t
-        ; data_2_out        : out     word_t
+        ; data_2_out        : buffer  word_t
         ; instructions_in   : in      word_t
-        ; instructions_out  : out     word_t
+        ; instructions_out  : buffer  word_t
        );
 end instruction_decode_pipe;
 

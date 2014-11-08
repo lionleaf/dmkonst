@@ -13,7 +13,7 @@ entity alu is
         ( operand_left   : in      signed (data_width - 1 downto 0) := to_signed(0, data_width)
         ; operand_right  : in      signed (data_width - 1 downto 0) := to_signed(0, data_width)
         ; operator       : in      alu_funct_t
-        ; result_is_zero : out     boolean := true
+        ; result_is_zero : buffer     boolean := true
         ; result         : buffer  signed (data_width - 1 downto 0) := to_signed(0, data_width)
         );
 
