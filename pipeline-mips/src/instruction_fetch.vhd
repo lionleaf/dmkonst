@@ -7,10 +7,10 @@ entity instruction_fetch is
 	port
 			( clk							: std_logic
 			; reset					 	: std_logic
-			; incremented_pc 			: addr_t
-			; branch_adress			: addr_t
-			; pc_source					: std_logic
-			; instructions				: std_logic_vector (31 downto 0)
+			; incremented_pc 	: addr_t
+			; branch_adress		: addr_t
+			; pc_source				: std_logic
+			; instructions		: word_t
 			)
 		;
 end instruction_fetch;

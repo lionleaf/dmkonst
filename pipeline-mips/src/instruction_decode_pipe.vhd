@@ -14,12 +14,12 @@ entity instruction_decode_pipe is
         ; reset             : in      std_logic
         ; incremented_PC_in : in      addr_t
         ; incremented_PC_out: out     addr_t
-        ; data_1_in         : in      STD_LOGIC_VECTOR (31 downto 0)
-        ; data_1_out        : out     STD_LOGIC_VECTOR (31 downto 0)
-        ; data_2_in         : in      STD_LOGIC_VECTOR (31 downto 0)
-        ; data_2_out        : out     STD_LOGIC_VECTOR (31 downto 0)
-        ; instructions_in   : in      STD_LOGIC_VECTOR (31 downto 0)
-        ; instructions_out  : out     STD_LOGIC_VECTOR (31 downto 0)
+        ; data_1_in         : in      word_t
+        ; data_1_out        : out     word_t
+        ; data_2_in         : in      word_t
+        ; data_2_out        : out     word_t
+        ; instructions_in   : in      word_t
+        ; instructions_out  : out     word_t
        );
 end instruction_decode_pipe;
 

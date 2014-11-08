@@ -14,14 +14,14 @@ entity execution_pipe is
         ; reset             : in        std_logic
         ; sum_in            : in        addr_t
         ; sum_out           : out       addr_t
-        ; zero_in           : in        boolean := true
-        ; zero_out          : out       boolean := true
-        ; alu_result_in     : buffer    signed (data_width - 1 downto 0) := to_signed(0, data_width)
-        ; alu_result_out    : buffer    signed(data_width - 1 downto 0) := to_signed(0, data_width)
-        ; data_2_in         : in        std_logic_vector (31 downto 0)
-        ; data_2_out        : out       std_logic_vector (31 downto 0)
-        ; instructions_in   : in        std_logic_vector (31 downto 0)
-        ; instructions_out  : out       std_logic_vector (31 downto 0)
+        ; zero_in           : in        std_logic
+        ; zero_out          : out       std_logic
+        ; alu_result_in     : buffer    word_t
+        ; alu_result_out    : buffer    word_t
+        ; data_2_in         : in        word_t
+        ; data_2_out        : out       word_t
+        ; instructions_in   : in        word_t
+        ; instructions_out  : out       word_t
         );
 end execution_pipe;
 
@@ -34,7 +34,7 @@ begin
     if rising_edge(clk) then
         if reset = '1' then -- synchronous reset 
             sum_out             <= (others => '0');
-            zero_out            <= true;
+            zero_out            <= '1';
             data_2_out          <= (others => '0');
             alu_result_out      <= (others => '0');
             instructions_out    <= (others => '0');
