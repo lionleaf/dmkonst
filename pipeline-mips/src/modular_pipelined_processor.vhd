@@ -108,8 +108,7 @@ begin
 		entity work.instruction_decode
 		port map
 			(	clk				=> clk
-			,	reset				=> reset
-			,	instructions	=>	instructions_id_in
+			,	instruction	=>	instructions_id_in
 			,	write_data		=>	write_data
 			,	write_register	=>	write_register
 			,	data_1			=>	data_1_id_out
@@ -199,6 +198,7 @@ begin
 		
 	--------------- Write Back ---------------
 	
+	write_data <= data_wb;
 --	write_data <= data_readback_in when memory_to_register = '1'
 --			else	  alu_result_wb_in;
 	
