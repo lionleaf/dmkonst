@@ -2,8 +2,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package defs is
+--    data_t is deprecated
     subtype data_t is std_logic_vector(31 downto 0);
+    subtype word_t is std_logic_vector(31 downto 0);
     subtype addr_t is std_logic_vector(7 downto 0);
+    subtype reg_t is std_logic_vector(4 downto 0);
     
     type alu_funct_t is
         ( alu_add
