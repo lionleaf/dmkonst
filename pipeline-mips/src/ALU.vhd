@@ -13,7 +13,7 @@ entity alu is
         ( operand_left   : in      signed (data_width - 1 downto 0) := to_signed(0, data_width)
         ; operand_right  : in      signed (data_width - 1 downto 0) := to_signed(0, data_width)
         ; operator       : in      alu_funct_t
-        ; result_is_zero : out     boolean := true
+        ; result_is_zero : out     std_logic := '1'
         ; result         : buffer  signed (data_width - 1 downto 0) := to_signed(0, data_width)
         );
 
@@ -21,8 +21,6 @@ end alu;
 
 architecture behavioral of alu is
 begin
-
-    result_is_zero <= (result = 0);
 
     process (operator, operand_left, operand_right)
     begin
@@ -39,5 +37,15 @@ begin
                 end if;
         end case;
     end process;
+	 
+	 
+	 process(result)
+	 begin
+		 if result /= 0 then
+			result_is_zero <= '0';
+		 else
+			result_is_zero <= '1';
+		 end if;
+	 end process;
  
 end behavioral;
