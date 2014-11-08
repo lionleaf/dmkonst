@@ -20,8 +20,8 @@ entity execution_pipe is
         ; alu_result_out    : buffer    word_t
         ; data_2_in         : in        word_t
         ; data_2_out        : out       word_t
-        ; instructions_in   : in        word_t
-        ; instructions_out  : out       word_t
+        ; instructions_in   : in        reg_t
+        ; instructions_out  : out       reg_t
         );
 end execution_pipe;
 
