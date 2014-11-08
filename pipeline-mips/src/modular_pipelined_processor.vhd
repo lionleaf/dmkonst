@@ -11,11 +11,11 @@ entity processor is
     port
         ( clk, reset        : in  std_logic
         ; processor_enable  : in  std_logic
-        ; imem_data_in      : in  std_logic_vector(data_width-1 downto 0)
-        ; imem_address      : buffer std_logic_vector(addr_width-1 downto 0)
-        ; dmem_data_in      : in  std_logic_vector(data_width-1 downto 0)
-        ; dmem_address      : out std_logic_vector(addr_width-1 downto 0)
-        ; dmem_data_out     : out std_logic_vector(data_width-1 downto 0)
+        ; imem_data_in      : in  word_t
+        ; imem_address      : buffer addr_t
+        ; dmem_data_in      : in  word_t
+        ; dmem_address      : out addr_t
+        ; dmem_data_out     : buffer word_t
         ; dmem_write_enable : out std_logic
         );
 end processor;
@@ -37,24 +37,44 @@ architecture Behavioral of processor is
 		
 	signal instructions_if_out		:  std_logic_vector (31 downto 0);
 	signal instructions_id_in		:  std_logic_vector (31 downto 0);
-   signal instructions_ex_in		:  std_logic_vector (31 downto 0);
+  signal instructions_ex_in		:  std_logic_vector (31 downto 0);
 	
 	signal data_1_id_out				:	std_logic_vector (31 downto 0);
 	signal data_2_id_out				:	std_logic_vector (31 downto 0);
 	signal data_1_ex_in				:	std_logic_vector (31 downto 0);
 	signal data_2_ex_in				:	std_logic_vector (31 downto 0);
+  
+  signal alu_source         : std_logic;
+  signal alu_zero_ex_out    : std_logic;
+  signal alu_zero_mem_in    : std_logic;
+  signal alu_operation      : alu_funct_t;
+  signal alu_result_ex_out  : word_t;
+  signal alu_result_mem     : word_t;
+  
+  signal branch_address_ex_out : addr_t;
+  
+  signal write_register_ex_out : reg_t;
+  signal branch_adress         : addr_t;
+  
+  signal register_destination : std_logic;
 	
 	signal write_data					:  std_logic_vector (31 downto 0);
 	
 	signal write_register			:  std_logic_vector (4 downto 0);
 	
+  signal data_wb          : word_t;
+  signal alu_result_wb    : word_t;
+  
+  
 	subtype reg_number is std_logic_vector(4 downto 0);
+  
+  
 	
-   alias rt_ex_in : reg_number is instructions_ex_in(20 downto 16);
-   alias rd_ex_in : reg_number is instructions_ex_in(15 downto 11);
+  alias rt_ex_in : reg_number is instructions_ex_in(20 downto 16);
+  alias rd_ex_in : reg_number is instructions_ex_in(15 downto 11);
 	
 	
-	 
+	signal instructions_mem_in  : reg_t;
 begin
 	
 	--------------- Instruction Fetch --------------- 
@@ -67,7 +87,6 @@ begin
 			, incremented_pc 			=> incremented_pc_if_out
 			, branch_adress			=> branch_adress_if_in
 			, pc_source					=> pc_source
-			, instructions				=> instructions_if_out
 			)
 		;
 		
@@ -139,12 +158,11 @@ begin
 
 	write_register_ex_out <= rd_ex_in when register_destination = '1'
 							else	 rt_ex_in;
-							
+  
+  dmem_address <= alu_result_mem(7 downto 0);
 	ex_to_mem_pipe:
 		entity work.execution_pipe
-		generic map
-        ( data_width : integer := 32
-        )
+
 		port map
 			( clk               => clk
 			, reset             => reset
@@ -153,7 +171,7 @@ begin
 			, zero_in           => alu_zero_ex_out
 			, zero_out          => alu_zero_mem_in
 			, alu_result_in     => alu_result_ex_out
-			, alu_result_out    => dmem_address
+			, alu_result_out    => alu_result_mem
 			, data_2_in         => data_2_ex_in
 			, data_2_out        => dmem_data_out
 			, instructions_in   => write_register_ex_out
@@ -163,20 +181,17 @@ begin
 		
 	--------------- Memory ---------------
 
-	pc_source <= branch and alu_zero;
+--	pc_source <= branch and alu_zero;
 
 	mem_to_wb_pipe:
 		entity work.write_back_pipe
-		generic map
-        ( data_width : integer := 32
-        );
 		port map
 			(  clk              => clk
 			,  reset            => reset
 			,  read_data_in     => dmem_data_out
-			,  read_data_out    => data_readback_in
-			,  alu_result_in    => dmem_address
-			,  alu_result_out   => alu_result_wb_in
+			,  read_data_out    => data_wb
+			,  alu_result_in    => alu_result_mem
+			,  alu_result_out   => alu_result_wb
 			,  instructions_in  => instructions_mem_in
 			,  instructions_out => write_register
 			)
@@ -184,8 +199,8 @@ begin
 		
 	--------------- Write Back ---------------
 	
-	write_data <= data_readback_in when memory_to_register = '1'
-			else	  alu_result_wb_in;
+--	write_data <= data_readback_in when memory_to_register = '1'
+--			else	  alu_result_wb_in;
 	
 	
 end Behavioral;
