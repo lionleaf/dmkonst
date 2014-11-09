@@ -7,6 +7,7 @@ package defs is
     subtype inst_t is std_logic_vector(31 downto 0);
     subtype inst_addr_t is std_logic_vector(7 downto 0);
     subtype reg_n_t is std_logic_vector(4 downto 0);
+    subtype opcode_t is std_logic_vector(5 downto 0);
 
     type alu_funct_t is
         ( alu_add
@@ -41,7 +42,7 @@ package defs is
         mem_to_reg  : std_logic;
         reg_wen     : std_logic;
         alu_funct   : alu_funct_t;
-        inst_type_I : inst_type_t;
+        inst_type_I : std_logic;
 
         pc_succ    : inst_addr_t;
         imm_val    : word_t;
@@ -100,16 +101,6 @@ package body defs is
 
     function to_std_logic (p: boolean)
         return std_logic
-    is begin
-        if p then
-            return '1';
-        else
-            return '0';
-        end if;
-    end to_std_logic;
-
-    function inst_type_t (opcode: opcode_t)
-        return inst_type_t
     is begin
         if p then
             return '1';
