@@ -9,6 +9,7 @@ entity instruction_decode is
 		;	write_data      : in word_t
 		;	instruction     : in inst_t := (others => '0')
 		;	write_register	: in reg_t
+		;	write_reg_enable: in std_logic
 		;	data_1			    : out word_t
 		;	data_2			    : out word_t
     
@@ -25,10 +26,6 @@ entity instruction_decode is
 end instruction_decode;
 
 architecture Behavioral of instruction_decode is
-
-    --Control signals
-    signal write_reg_enable: std_logic;
-
 
     -- decomposition of instruction
     alias rs        : reg_t   is instruction(25 downto 21);
