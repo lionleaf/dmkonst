@@ -1,4 +1,4 @@
-		library ieee;
+library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.defs.all;
@@ -15,9 +15,6 @@ entity instruction_fetch is
 		;
 end instruction_fetch;
 architecture Behavioral of instruction_fetch is
-
-
-
 begin
 
 program_counter:
