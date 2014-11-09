@@ -73,7 +73,7 @@ package defs is
         -- Control signals:
         reg_wen    : std_logic;
         mem_to_reg : std_logic;
-        -- Note: mem_result should not be ff-ed because it already is late one cycle.
+        -- Note: mem_read_data should not be ff-ed because it already is late one cycle.
         alu_result : word_t;
         -- Writeback details:
         reg_dst    : reg_n_t;
