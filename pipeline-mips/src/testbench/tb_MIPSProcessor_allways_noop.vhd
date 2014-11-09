@@ -148,9 +148,9 @@ DataMem:			entity work.DualPortMem port map (
                 constant n_noops : integer := 9;
 		begin
 			for i in 0 to TEST_INSTRS-1 loop
-				WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops+), ADDR_WIDTH));
+				WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops), ADDR_WIDTH));
                 for j in 1 to n_noops loop
-                    WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops+)+j, ADDR_WIDTH));
+                    WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops)+j, ADDR_WIDTH));
                 end loop;
 			end loop;
 		end FillInstructionMemory;

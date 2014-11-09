@@ -5,12 +5,13 @@ use work.defs.all;
 
 entity execute is
 	port
-		( incremented_pc	: in		addr_t
+		( incremented_pc: in		addr_t
 		; data_1				: in		word_t
 		; data_2				: in		word_t
-		; instructions  	: in 		word_t
+		; instructions  : in 		word_t
 		; alu_source		: in 		std_logic
-		; alu_operation	: in 		alu_funct_t
+		; alu_funct	    : in 		alu_funct_t
+		; alu_shamt     : in 		alu_funct_t
 		; alu_result		: out 	word_t
 		; alu_zero			: out		std_logic
 		; branch_address	: out		addr_t
@@ -22,7 +23,6 @@ architecture Behavioral of execute is
 
 	alias immediate			: std_logic_vector(15 downto 0) is instructions(15 downto 0);
 	signal operand_right		: word_t;
-	signal alu_result_buffer: signed (31 downto 0) := to_signed(0, 32);
 
 begin
 	
@@ -40,18 +40,18 @@ begin
 	alu:
 		entity work.alu
 		port map
-			( operand_left   => signed(data_1)
-			, operand_right  => signed(operand_right)
-			, operator       => alu_operation
+			( operand_left   => data_1
+			, operand_right  => operand_right
+			, operator       => alu_funct
 			, result_is_zero => alu_zero
-			, result			  => alu_result_buffer
+			, result			   => alu_result
+			, shamt          => alu_shamt
 			)
 		;
     
   operand_right <= std_logic_vector(resize(signed(immediate), 32)) when alu_source = '1'
 				else	 data_2;
 
-	alu_result <= std_logic_vector(alu_result_buffer);
 		
 		
 	
