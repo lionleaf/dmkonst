@@ -27,9 +27,14 @@ begin
     execute_memory_pipe.branch_addr <= std_logic_vector(
                                 signed(decode_execute_pipe.pc_succ) + signed(imm_val));
 
+    -- This mux serves to direct the immediate value trough the alu-path
+    -- when loading an immediate to a register.
     operand_right <= imm_val when decode_execute_pipe.inst_type_I
                 else reg_val_rt;
 
+    -- Select appropriate destination-register-specification, depending
+    -- on whether the current instruciton is I-type or R-type. Don't care
+    -- for the J-type.
     execute_memory_pipe.reg_dst <= reg_rt when decode_execute_pipe.inst_type_I
                               else reg_rd;
 
