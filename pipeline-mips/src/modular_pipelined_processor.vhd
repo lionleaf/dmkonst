@@ -13,7 +13,7 @@ entity processor is
         ; imem_address      : buffer addr_t
 
         ; dmem_data_in      : in     word_t
-        ; dmem_address      : buffer addr_t
+        ; dmem_address      : buffer word_t
         ; dmem_data_out     : buffer word_t
         ; dmem_write_enable : buffer std_logic
         );
@@ -32,6 +32,7 @@ architecture Behavioral of processor is
     signal inst : inst_t;
     signal reg_val_rs : word_t;
     signal reg_val_rt : word_t;
+    signal mem_read_data : word_t;
 
     -- Backward-flow signals:
     signal branch     : std_logic;
@@ -103,9 +104,15 @@ begin
                 , reset       => reset
                 -- Input
                 , execute_memory_pipe => execute_memory_pipe
-                , branch => branch
                 -- Output
                 , mem_writeback_pipe  => mem_writeback_pipe
+                , mem_read_data => mem_read_data
+                , branch        => branch
+
+                , dmem_data_in      => dmem_data_in
+                , dmem_address      => dmem_address
+                , dmem_data_out     => dmem_data_out
+                , dmem_write_enable => dmem_write_enable
                 );
 
    writeback_stage:
