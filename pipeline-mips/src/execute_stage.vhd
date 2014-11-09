@@ -27,6 +27,7 @@ begin
     execute_memory_pipe.mem_to_reg <= decode_execute_pipe_t.mem_to_reg;
     execute_memory_pipe.reg_wen    <= decode_execute_pipe_t.reg_wen;
 
+    -- Data to be written to memory allways comes from the rt register.
     execute_memory_pipe.write_data <= reg_val_rt;
 
     -- Compute branch address:
