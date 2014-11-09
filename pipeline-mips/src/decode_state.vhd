@@ -37,6 +37,8 @@ architecture rtl of decode_stage is
 
 begin
 
+    -- todo: override alu_funct when nessesarry.
+
     decode_execute_pipe.reg_rt <= reg_rt;
     decode_execute_pipe.reg_rd <= reg_rd;
     decode_execute_pipe.branch_en  <= to_std_logic(opcode = OP_BEQ);
