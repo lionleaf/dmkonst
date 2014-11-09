@@ -13,15 +13,15 @@ entity execution_pipe is
         ( clk               : in        std_logic
         ; reset             : in        std_logic
         ; sum_in            : in        addr_t
-        ; sum_out           : buffer    addr_t
+        ; sum_out           : out       addr_t
         ; zero_in           : in        std_logic
-        ; zero_out          : buffer    std_logic
+        ; zero_out          : out       std_logic
         ; alu_result_in     : in        word_t
-        ; alu_result_out    : buffer    word_t
+        ; alu_result_out    : out    word_t
         ; data_2_in         : in        word_t
-        ; data_2_out        : buffer    word_t
+        ; data_2_out        : out       word_t
         ; instructions_in   : in        reg_t
-        ; instructions_out  : buffer    reg_t
+        ; instructions_out  : out       reg_t
         );
 end execution_pipe;
 

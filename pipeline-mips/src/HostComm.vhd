@@ -22,19 +22,19 @@ entity HostComm is
 		clk, reset : in  std_logic;
 		-- interface towards the UART ports
 		UART_Rx : in  std_logic;
-		UART_Tx : buffer  std_logic;
+		UART_Tx : out  std_logic;
 		-- interface towards the processor
-		proc_en, proc_rst : buffer std_logic;
+		proc_en, proc_rst : out std_logic;
 		-- interface towards the instruction memory
 		imem_data_in : in std_logic_vector(7 downto 0);
-		imem_data_out : buffer std_logic_vector(7 downto 0);
-		imem_addr : buffer std_logic_vector(9 downto 0);
-		imem_wr_en : buffer std_logic;
+		imem_data_out : out std_logic_vector(7 downto 0);
+		imem_addr : out std_logic_vector(9 downto 0);
+		imem_wr_en : out std_logic;
 		-- interface towards the data memory
 		dmem_data_in : in std_logic_vector(7 downto 0);
-		dmem_data_out : buffer std_logic_vector(7 downto 0);
-		dmem_addr : buffer std_logic_vector(9 downto 0);
-		dmem_wr_en : buffer std_logic
+		dmem_data_out : out std_logic_vector(7 downto 0);
+		dmem_addr : out std_logic_vector(9 downto 0);
+		dmem_wr_en : out std_logic
 	);
 end HostComm;
 

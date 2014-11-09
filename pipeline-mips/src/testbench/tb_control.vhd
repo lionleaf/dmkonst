@@ -13,8 +13,8 @@ architecture behavior of tb_control is
         ; reset            : in   std_logic
         ; processor_enable : in   std_logic
         ; opcode           : in   std_logic_vector(5 downto 0)
-        ; update_pc        : buffer  std_logic
-        ; write_enable     : buffer  std_logic
+        ; update_pc        : out  std_logic
+        ; write_enable     : out  std_logic
         );
     end component;
 

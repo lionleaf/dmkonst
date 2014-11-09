@@ -14,17 +14,17 @@ entity uartTop is
          clk       : in  std_logic;                     -- global clock input
          -- uart serial signals
          serIn     : in  std_logic;                     -- serial data input
-         serOut    : buffer std_logic;                     -- serial data output
+         serOut    : out std_logic;                     -- serial data output
          -- transmit and receive internal interface signals
          txData    : in  std_logic_vector(7 downto 0);  -- data byte to transmit
          newTxData : in  std_logic;                     -- asserted to indicate that there is a new data byte for transmission
-         txBusy    : buffer std_logic;                     -- signs that transmitter is busy
-         rxData    : buffer std_logic_vector(7 downto 0);  -- data byte received
-         newRxData : buffer std_logic;                     -- signs that a new byte was received
+         txBusy    : out std_logic;                     -- signs that transmitter is busy
+         rxData    : out std_logic_vector(7 downto 0);  -- data byte received
+         newRxData : out std_logic;                     -- signs that a new byte was received
          -- baud rate configuration register - see baudGen.vhd for details
          baudFreq  : in  std_logic_vector(11 downto 0); -- baud rate setting registers - see header description
          baudLimit : in  std_logic_vector(15 downto 0); -- baud rate setting registers - see header description
-         baudClk   : buffer std_logic);                    -- 
+         baudClk   : out std_logic);                    -- 
 end uartTop;
 
 architecture Behavioral of uartTop is

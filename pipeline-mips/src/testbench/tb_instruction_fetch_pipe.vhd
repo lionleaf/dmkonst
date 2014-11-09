@@ -17,9 +17,9 @@ ARCHITECTURE behavior OF tb_instruction_fetch_pipe IS
     COMPONENT instruction_fetch_pipe
     PORT
         (instructions_in : IN  std_logic_vector(31 downto 0)
-         ;instructions_out : buffer  std_logic_vector(31 downto 0)
+         ;instructions_out : OUT  std_logic_vector(31 downto 0)
          ;program_counter_pluss_one_in : IN  std_logic_vector(7 downto 0)
-         ;program_counter_pluss_one_out : buffer  std_logic_vector(7 downto 0)
+         ;program_counter_pluss_one_out : OUT  std_logic_vector(7 downto 0)
          ;reset : IN  std_logic
          ;clk : IN  std_logic
         );

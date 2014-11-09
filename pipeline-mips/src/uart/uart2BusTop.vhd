@@ -17,15 +17,15 @@ entity uart2BusTop is
          clk          : in  STD_LOGIC;                          -- global clock input
          -- uart serial signals
          serIn        : in  STD_LOGIC;                          -- serial data input
-         serOut       : buffer STD_LOGIC;                          -- serial data output
+         serOut       : out STD_LOGIC;                          -- serial data output
          -- internal bus to register file
-         intAccessReq : buffer std_logic;                          --
+         intAccessReq : out std_logic;                          --
          intAccessGnt : in  std_logic;                          --
          intRdData    : in  STD_LOGIC_VECTOR (7 downto 0);      -- data read from register file
-         intAddress   : buffer STD_LOGIC_VECTOR (AW - 1 downto 0); -- address bus to register file
-         intWrData    : buffer STD_LOGIC_VECTOR (7 downto 0);      -- write data to register file
-         intWrite     : buffer STD_LOGIC;                          -- write control to register file
-         intRead      : buffer STD_LOGIC);                         -- read control to register file
+         intAddress   : out STD_LOGIC_VECTOR (AW - 1 downto 0); -- address bus to register file
+         intWrData    : out STD_LOGIC_VECTOR (7 downto 0);      -- write data to register file
+         intWrite     : out STD_LOGIC;                          -- write control to register file
+         intRead      : out STD_LOGIC);                         -- read control to register file
 end uart2BusTop;
 
 architecture Behavioral of uart2BusTop is

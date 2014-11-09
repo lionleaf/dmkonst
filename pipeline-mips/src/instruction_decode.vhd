@@ -9,8 +9,8 @@ entity instruction_decode is
 		;	write_data      : in word_t
 		;	instruction     : in word_t
 		;	write_register	: in reg_t
-		;	data_1			: buffer word_t
-		;	data_2			: buffer word_t
+		;	data_1			    : out word_t
+		;	data_2			    : out word_t
 		)
 	;
 end instruction_decode;

@@ -6,13 +6,13 @@ entity decode is
     Port
         ( opcode           : in   std_logic_vector(5 downto 0)
         ; write_enable     : in   std_logic
-        ; reg_dest         : buffer  std_logic
-        ; pc_control       : buffer  pc_control_t
-        ; mem_to_reg       : buffer  std_logic
-        ; alu_override     : buffer  alu_override_t
-        ; mem_write_enable : buffer  std_logic
-        ; alu_src          : buffer  std_logic
-        ; reg_write_enable : buffer  std_logic
+        ; reg_dest         : out  std_logic
+        ; pc_control       : out  pc_control_t
+        ; mem_to_reg       : out  std_logic
+        ; alu_override     : out  alu_override_t
+        ; mem_write_enable : out  std_logic
+        ; alu_src          : out  std_logic
+        ; reg_write_enable : out  std_logic
         );
 end decode;
 

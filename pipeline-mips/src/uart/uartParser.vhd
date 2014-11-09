@@ -16,16 +16,16 @@ entity uartParser is
          txBusy     : in  std_logic;                         -- signs that transmitter is busy
          rxData     : in  std_logic_vector(7 downto 0);      -- data byte received
          newRxData  : in  std_logic;                         -- signs that a new byte was received
-         txData     : buffer std_logic_vector(7 downto 0);      -- data byte to transmit
-         newTxData  : buffer std_logic;                         -- asserted to indicate that there is a new data byte for transmission
+         txData     : out std_logic_vector(7 downto 0);      -- data byte to transmit
+         newTxData  : out std_logic;                         -- asserted to indicate that there is a new data byte for transmission
 	 -- internal bus to register file 
-         intReq     : buffer std_logic;                         -- 
+         intReq     : out std_logic;                         -- 
          intGnt     : in  std_logic;                         -- 
          intRdData  : in  std_logic_vector(7 downto 0);      -- data read from register file
-         intAddress : buffer std_logic_vector(AW - 1 downto 0); -- address bus to register file
-         intWrData  : buffer std_logic_vector(7 downto 0);      -- write data to register file
-         intWrite   : buffer std_logic;                         -- write control to register file
-         intRead    : buffer std_logic);                        -- read control to register file
+         intAddress : out std_logic_vector(AW - 1 downto 0); -- address bus to register file
+         intWrData  : out std_logic_vector(7 downto 0);      -- write data to register file
+         intWrite   : out std_logic;                         -- write control to register file
+         intRead    : out std_logic);                        -- read control to register file
 end uartParser;
 
 architecture Behavioral of uartParser is

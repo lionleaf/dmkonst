@@ -5,12 +5,12 @@ use work.defs.all;
 
 entity instruction_fetch_pipe is
     Port 
-        ( instructions_in     : in     word_t
-        ; instructions_out    : buffer word_t
-        ; incremented_pc_in   : in     addr_t
-        ; incremented_pc_out  : buffer addr_t
-        ; reset               : in     std_logic
-        ; clk                 : in     std_logic
+        ( instructions_in     : in    word_t
+        ; instructions_out    : out   word_t
+        ; incremented_pc_in   : in    addr_t
+        ; incremented_pc_out  : out   addr_t
+        ; reset               : in    std_logic
+        ; clk                 : in    std_logic
         );
            
 end instruction_fetch_pipe;

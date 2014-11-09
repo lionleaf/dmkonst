@@ -29,9 +29,9 @@ entity MIPSSystem is
 		clk, reset : in  STD_LOGIC;
 		-- interface towards the UART ports
 		UART_Rx : in  STD_LOGIC;
-		UART_Tx : buffer  STD_LOGIC;
+		UART_Tx : out  STD_LOGIC;
 		-- LED output
-		leds : buffer  STD_LOGIC_VECTOR (3 downto 0)
+		leds : out  STD_LOGIC_VECTOR (3 downto 0)
 	);
 end MIPSSystem;
 
