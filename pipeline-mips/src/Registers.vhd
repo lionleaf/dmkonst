@@ -50,10 +50,11 @@ begin
     end process;
     
 
-    process (clk)
-    begin
-        if rising_edge(clk) and write_enable = '1' then
+    process (clk) begin
+        if rising_edge(clk) then
+            if write_enable = '1' then
                 regfile(to_integer(unsigned(write_reg))) <= write_data;
+            end if;
         end if;
     end process;
 
