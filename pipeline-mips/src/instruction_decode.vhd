@@ -7,11 +7,20 @@ entity instruction_decode is
 	port
 		(	clk             : std_logic
 		;	write_data      : in word_t
-		;	instruction     : in word_t
+		;	instruction     : in inst_t := (others => '0')
 		;	write_register	: in reg_t
 		;	data_1			    : out word_t
 		;	data_2			    : out word_t
-		)
+    
+    --Control outputs
+    ; branch_en   : out  std_logic
+    ; mem_to_reg  : out  std_logic
+    ; mem_wen     : out  std_logic
+    ; reg_wen     : out  std_logic
+    ; inst_type_I : out  std_logic
+    ; alu_funct   : out  alu_funct_t
+    ; alu_shamt   : out  alu_shamt_t
+    )
 	;
 end instruction_decode;
 
@@ -26,6 +35,21 @@ architecture Behavioral of instruction_decode is
     alias rt        : reg_t    is instruction(20 downto 16);
 
 begin
+
+
+   decode:
+    entity work.decode
+        port map
+            ( instruction => instruction
+            , branch_en   => branch_en
+            , mem_to_reg  => mem_to_reg   
+            , mem_wen     => mem_wen     
+            , reg_wen     => reg_wen       
+            , inst_type_I => inst_type_I
+            , alu_funct   => alu_funct
+            , alu_shamt   => alu_shamt
+            )
+        ;
 
     register_file:
         entity work.register_file
