@@ -48,6 +48,8 @@ begin
     decode_execute_pipe.alu_funct <= to_alu_funct_t(alu_funct_raw);
     decode_execute_pipe.imm_val <= std_logic_vector(resize(unsigned(imm_val_raw), word_t'length));
     decode_execute_pipe.pc_succ <= fetch_decode_pipe.pc_succ;
+    -- Don't enable register-writing when branching and writing to memory.
+    decode_execute_pipe.reg_wen <= to_std_logic((opcode = OP_SW) or (opcode = OP_BEQ));
 
     register_file:
         entity work.register_file
