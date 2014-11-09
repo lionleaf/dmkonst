@@ -21,6 +21,12 @@ architecture rtl of execute_stage is
 
 begin
 
+    -- Propagate control signals:
+    execute_memory_pipe.branch_en  <= decode_execute_pipe_t.branch_en;
+    execute_memory_pipe.mem_wen    <= decode_execute_pipe_t.mem_wen;
+    execute_memory_pipe.mem_to_reg <= decode_execute_pipe_t.mem_to_reg;
+    execute_memory_pipe.reg_wen    <= decode_execute_pipe_t.reg_wen;
+
     execute_memory_pipe.write_data <= reg_val_rt;
 
     -- Compute branch address:
