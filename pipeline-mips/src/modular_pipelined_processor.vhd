@@ -30,6 +30,8 @@ architecture Behavioral of processor is
 
     -- Forward non-flipfloped signals;
     signal inst : inst_t;
+    signal reg_val_rs : word_t;
+    signal reg_val_rt : word_t;
 
     -- Backward-flow signals:
     signal branch     : std_logic;
@@ -80,15 +82,16 @@ begin
                 , reg_w_data => reg_w_data
                 -- Output
                 , decode_execute_pipe => decode_execute_pipe
+                , reg_val_rs => reg_val_rs
+                , reg_val_rt => reg_val_rt
                 );
 	
     execute_stage:
         entity work.execute_stage
             port map
-                ( clk         => clk
-                , reset       => reset
-                -- Input
-                , decode_execute_pipe => decode_execute_pipe
+                ( decode_execute_pipe => decode_execute_pipe
+                , reg_val_rs => reg_val_rs
+                , reg_val_rt => reg_val_rt
                 -- Output
                 , execute_memory_pipe => execute_memory_pipe
                 );
