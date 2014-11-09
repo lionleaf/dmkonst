@@ -141,9 +141,7 @@ begin
 	execute:
 		entity work.execute
 		port map
-			( clk					=> clk
-			, reset				=> reset
-			, incremented_pc	=> incremented_pc_ex_in
+			(  incremented_pc	=> incremented_pc_ex_in
 			, data_1				=> data_1_ex_in
 			, data_2				=> data_2_ex_in
 			, instructions		=> instructions_ex_in

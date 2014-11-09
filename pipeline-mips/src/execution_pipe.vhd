@@ -16,7 +16,7 @@ entity execution_pipe is
         ; sum_out           : buffer    addr_t
         ; zero_in           : in        std_logic
         ; zero_out          : buffer    std_logic
-        ; alu_result_in     : buffer    word_t
+        ; alu_result_in     : in        word_t
         ; alu_result_out    : buffer    word_t
         ; data_2_in         : in        word_t
         ; data_2_out        : buffer    word_t
