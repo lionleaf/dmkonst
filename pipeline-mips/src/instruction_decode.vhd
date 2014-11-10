@@ -45,6 +45,7 @@ begin
             , mem_to_reg  => mem_to_reg   
             , mem_wen     => mem_wen     
             , reg_wen     => reg_wen       
+            , imm_to_alu  => imm_to_alu
             , inst_type_I => inst_type_I
             , alu_funct   => alu_funct
             , alu_shamt   => alu_shamt
