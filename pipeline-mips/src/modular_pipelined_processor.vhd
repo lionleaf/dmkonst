@@ -31,7 +31,6 @@ architecture Behavioral of processor is
 	signal incremented_pc_id	:  addr_t;
 	signal incremented_pc_ex	:	addr_t;
 	
-	signal branch_adress_if_in		:	addr_t;
 	
 	signal pc_source					:	std_logic;
 		
@@ -49,16 +48,13 @@ architecture Behavioral of processor is
   signal alu_result_mem     : word_t;
   
   signal branch_addr_ex     : addr_t;
-  
+  signal branch_addr_mem		:	addr_t;
+
   signal write_reg_dst_ex   : reg_t;
   signal write_reg_dst_mem  : reg_t;
   signal write_reg_dst_wb   : reg_t;
-  signal branch_addr_mem    : addr_t;
-  
-  signal register_destination : std_logic;
-	
-	signal write_register			:  std_logic_vector (4 downto 0);
-	
+  	
+    
   -- The memory data that might be written to reg
   signal mem_data_wb      : word_t;
   
@@ -93,6 +89,7 @@ architecture Behavioral of processor is
   -------------------------------------
   -- Consumed in execute
   signal inst_type_I_ex : std_logic;
+  signal imm_to_alu_ex : std_logic;
   signal alu_funct_ex  : alu_funct_t;
   signal alu_shamt_ex  : alu_shamt_t;
 
@@ -110,6 +107,10 @@ architecture Behavioral of processor is
   -- Consumed in memory
   signal branch_en_mem  : std_logic;
   signal mem_wen_mem    : std_logic;
+  
+  --Signal back to IF
+  signal branch_en_if  : std_logic;
+
 
   -- For write back stage
   signal mem_to_reg_mem : std_logic; 
@@ -142,7 +143,7 @@ begin
       , processor_enable  => processor_enable
 			, incremented_pc 		=> incremented_pc_if
 			, branch_adress			=> branch_addr_mem
-			, pc_source					=> pc_source
+			, branch_en					=> branch_en_if
       , pc                => imem_address
 			)
 		;
@@ -287,7 +288,7 @@ begin
 		
 	--------------- Memory ---------------
 
-  pc_source <= branch_en_mem and alu_zero_mem;
+  branch_en_if <= branch_en_mem and alu_zero_mem;
   
   dmem_write_enable <= mem_wen_mem;
   dmem_address <= alu_result_mem(7 downto 0);

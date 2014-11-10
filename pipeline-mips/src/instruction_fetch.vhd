@@ -10,7 +10,7 @@ entity instruction_fetch is
 			; processor_enable: in	std_logic
 			; incremented_pc 	: out	addr_t
 			; branch_adress		: in	addr_t
-			; pc_source				: in 	std_logic
+			; branch_en				: in 	std_logic
 			; pc							: out	addr_t
 			)
 		;
@@ -24,7 +24,7 @@ program_counter:
 		( reset             => reset
 		, clk               => clk
     , processor_enable  => processor_enable
-		, pc_source         => pc_source  
+		, branch_en         => branch_en  
 		, branch_addr       => branch_adress
 		, PC                => pc
 		, incremented_PC    => incremented_pc

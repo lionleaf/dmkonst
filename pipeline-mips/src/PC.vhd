@@ -8,7 +8,7 @@ entity PC is
         ( reset             : in        std_logic
         ; clk               : in        std_logic
         ; processor_enable  : in        std_logic
-        ; pc_source         : in        std_logic   
+        ; branch_en         : in        std_logic   
         ; branch_addr       : in        addr_t
         
         ; PC                : out    addr_t
@@ -27,7 +27,7 @@ begin
     
     incremented_PC_i <= std_logic_vector(resize(unsigned(PC_i) + 1, 8));
     
-    next_PC <=  branch_addr       when pc_source = '1'
+    next_PC <=  branch_addr       when branch_en = '1'
            else incremented_PC_i;
 
     process (clk)
