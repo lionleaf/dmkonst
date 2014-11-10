@@ -138,6 +138,7 @@ begin
 		port map
 			( clk							  =>	clk
 			, reset						  => reset
+      , processor_enable  => processor_enable
 			, incremented_pc 		=> incremented_pc_if
 			, branch_adress			=> branch_addr_mem
 			, pc_source					=> pc_source
@@ -162,7 +163,8 @@ begin
 		port map
 			(	clk				=> clk
 			,	instruction	=>	imem_data_in
-			
+      , processor_enable  => processor_enable
+
       -- Write back from wb stage
       ,	write_data		    =>	write_data_wb
 			,	write_register	  =>	write_reg_dst_wb
@@ -305,9 +307,6 @@ begin
 	--------------- Write Back ---------------
 	write_data_wb <= mem_data_wb when mem_to_reg_wb = '1'
 			        else alu_result_wb;
-
---		write_register_ex <= register_rd_ex when register_destination = '1'
---							else	 rt_ex_in;
   
   dmem_address <= alu_result_mem(7 downto 0);
 	

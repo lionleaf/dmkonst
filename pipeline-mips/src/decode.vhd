@@ -6,6 +6,7 @@ use work.defs.all;
 entity decode is
     Port
         ( instruction : in   inst_t
+        ; processor_enable : in  std_logic
         ; branch_en   : out  std_logic
         ; mem_to_reg  : out  std_logic
         ; mem_wen     : out  std_logic
@@ -33,13 +34,14 @@ begin
      inst_type_I <= '0';
      alu_funct   <= (others => '0');
      alu_shamt   <= (others => '0');
- 
-      case opcode is
-
-          when "000000" => -- ALU operation (and, or, add, sub, slt, sll)
+     
+     -- We send out 0s if processor is disabled, a nop instruction.
+     if processor_enable = '1' then
+       case opcode is
+          when op_add => -- ALU operation (and, or, add, sub, slt, sll)
               reg_wen <= '1';
 
-          when "000100" => -- beq branch if equal
+          when op_beq => -- beq branch if equal
               branch_en <= '1';
               inst_type_I <= '1';
               alu_funct <= alu_sub;
@@ -47,18 +49,18 @@ begin
 --            when "000010" => -- jump
 --                reg_dest <= '1';
 --                pc_control <= jump;
-          when "100011" => -- lw load word
+          when op_lw => -- lw load word
               mem_to_reg <= '1';
               alu_funct <= alu_sub;
               inst_type_I <= '1';
               reg_wen     <= '1';
 
-          when "101011" => -- sw store word
+          when op_sw => -- sw store word
               alu_funct <= alu_sub;
               inst_type_I <= '1';
               mem_wen <= '1';
 
-          when "001111" => -- lui load upper imm
+          when op_lui => -- lui load upper imm
               alu_funct <= alu_sll;
               alu_shamt <= std_logic_vector(to_unsigned(16, 6));
               inst_type_I <= '1';
@@ -66,6 +68,7 @@ begin
 
           when others => --Error, should not happen
       end case;
+    end if;
   end process;
 
 end Behavioral;

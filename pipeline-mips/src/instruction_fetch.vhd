@@ -7,6 +7,7 @@ entity instruction_fetch is
 	port
 			( clk							: in	std_logic
 			; reset					 	: in	std_logic
+			; processor_enable: in	std_logic
 			; incremented_pc 	: out	addr_t
 			; branch_adress		: in	addr_t
 			; pc_source				: in 	std_logic
@@ -22,6 +23,7 @@ program_counter:
 	port map
 		( reset             => reset
 		, clk               => clk
+    , processor_enable  => processor_enable
 		, pc_source         => pc_source  
 		, branch_addr       => branch_adress
 		, PC                => pc

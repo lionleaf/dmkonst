@@ -6,6 +6,7 @@ use work.defs.all;
 entity instruction_decode is
 	port
 		(	clk             : std_logic
+    ; processor_enable: std_logic
 		;	write_data      : in word_t
 		;	instruction     : in inst_t := (others => '0')
 		;	write_register	: in reg_t
@@ -37,7 +38,8 @@ begin
    decode:
     entity work.decode
         port map
-            ( instruction => instruction
+            ( processor_enable => processor_enable
+            , instruction => instruction
             , branch_en   => branch_en
             , mem_to_reg  => mem_to_reg   
             , mem_wen     => mem_wen     

@@ -7,6 +7,7 @@ entity PC is
     port
         ( reset             : in        std_logic
         ; clk               : in        std_logic
+        ; processor_enable  : in        std_logic
         ; pc_source         : in        std_logic   
         ; branch_addr       : in        addr_t
         
@@ -34,7 +35,7 @@ begin
         if rising_edge(clk) then
             if reset = '1' then
                 PC_i <= (others => '0');
-            else
+            elsif processor_enable = '1' then
                 PC_i <= next_PC;
             end if;
         end if;

@@ -51,7 +51,7 @@ ARCHITECTURE behavior OF tb_MIPSProcessor_allways_noop IS
    constant clk_period : time := 10 ns; 
 BEGIN
 -- Instantiate the processor
-Processor: entity work.MIPSProcessor(Behavioral) port map (
+Processor: entity work.processor(Behavioral) port map (
 						clk => clk,	reset => reset,
 						processor_enable => processor_enable,
 						imem_data_in => imem_data_in,
@@ -149,9 +149,9 @@ DataMem:			entity work.DualPortMem port map (
 		begin
 			for i in 0 to TEST_INSTRS-1 loop
 				WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops), ADDR_WIDTH));
-                for j in 1 to n_noops loop
-                    WriteInstructionWord(TestInstrData(i), to_unsigned(i*(n_noops)+j, ADDR_WIDTH));
-                end loop;
+        for j in 1 to n_noops loop
+            WriteInstructionWord(X"00000000", to_unsigned(i*(n_noops)+j, ADDR_WIDTH));
+        end loop;
 			end loop;
 		end FillInstructionMemory;
 		
@@ -190,7 +190,7 @@ DataMem:			entity work.DualPortMem port map (
 													& " expected " 
 													& integer'image(to_integer(unsigned(data)))
 													severity note;
-			assert data /= dmem_data_in report "Expected data found at datamem addr " & integer'image(address) severity note;
+			assert data /= dmem_data_in report "Expected data found at datamem addr " & integer'image(address) severity failure;
 		end CheckDataWord;
 		
 		procedure CheckDataMemory is
@@ -224,10 +224,41 @@ DataMem:			entity work.DualPortMem port map (
       -- enable the processor
 		processor_enable <= '1';
 		-- execute for 200 cycles and stop
-		wait for clk_period*200;
+		wait for clk_period*200*9;
 		
 		processor_enable <= '0';
-		
+    
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+    report "------------------------------------------------";
+
 		-- check the results
 		CheckDataMemory;
 
