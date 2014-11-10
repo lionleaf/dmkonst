@@ -35,7 +35,7 @@ begin
      mem_wen     <= '0';
      reg_wen     <= '0';
      inst_type_I <= '0';
-     imm_to_alu <= '0';
+     imm_to_alu  <= '0';
      alu_funct   <= (others => '0');
      alu_shamt   <= (others => '0');
      
@@ -49,6 +49,7 @@ begin
           when op_beq => -- beq branch if equal
               branch_en <= '1';
               alu_funct <= alu_sub;
+              inst_type_I <= '1';
 
 --            when "000010" => -- jump
 --                reg_dest <= '1';
