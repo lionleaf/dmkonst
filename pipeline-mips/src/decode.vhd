@@ -10,6 +10,7 @@ entity decode is
         ; branch_en   : out  std_logic
         ; mem_to_reg  : out  std_logic
         ; mem_wen     : out  std_logic
+        ; mem_read    : out  std_logic
         ; reg_wen     : out  std_logic
         ; inst_type_I : out  std_logic
         ; imm_to_alu  : out  std_logic
@@ -33,6 +34,7 @@ begin
      branch_en   <= '0';
      mem_to_reg  <= '0';
      mem_wen     <= '0';
+     mem_read    <= '0';
      reg_wen     <= '0';
      inst_type_I <= '0';
      imm_to_alu  <= '0';
@@ -56,6 +58,7 @@ begin
 --                pc_control <= jump;
           when op_lw => -- lw load word
               mem_to_reg  <= '1';
+              mem_read    <= '1';
               alu_funct   <= alu_add;
               inst_type_I <= '1';
               imm_to_alu  <= '1';

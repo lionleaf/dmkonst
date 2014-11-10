@@ -27,6 +27,8 @@ entity id_to_ex_pipe is
         ; inst_type_I_out   : out   std_logic
         ; imm_to_alu_in     : in    std_logic
         ; imm_to_alu_out    : out   std_logic
+        ; mem_read_in       : in   std_logic
+        ; mem_read_out      : out   std_logic
         ; alu_funct_in      : in    alu_funct_t
         ; alu_funct_out     : out   alu_funct_t
         ; alu_shamt_in      : in    alu_shamt_t
@@ -60,6 +62,7 @@ begin
            data_2_out         <= (others => '0');
            inst_type_I_out    <= '0';
            imm_to_alu_out     <= '0';
+           mem_read_out       <= '0';
            alu_funct_out      <= (others => '0');
            alu_shamt_out      <= (others => '0');
            branch_en_out      <= '0';
@@ -73,6 +76,7 @@ begin
            data_2_out         <= data_2_in;
            inst_type_I_out    <= inst_type_I_in;
            imm_to_alu_out     <= imm_to_alu_in;
+           mem_read_out       <= mem_read_in;
            alu_funct_out      <= alu_funct_in;
            alu_shamt_out      <= alu_shamt_in;
            branch_en_out      <= branch_en_in;
