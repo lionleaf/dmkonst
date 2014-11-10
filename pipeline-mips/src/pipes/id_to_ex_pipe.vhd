@@ -25,6 +25,8 @@ entity id_to_ex_pipe is
         --For execute stage
         ; inst_type_I_in    : in    std_logic
         ; inst_type_I_out   : out   std_logic
+        ; imm_to_alu_in     : out   std_logic
+        ; imm_to_alu_out    : out   std_logic
         ; alu_funct_in      : in    alu_funct_t
         ; alu_funct_out     : out   alu_funct_t
         ; alu_shamt_in      : in    alu_shamt_t

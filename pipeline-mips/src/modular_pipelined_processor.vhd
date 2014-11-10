@@ -76,6 +76,7 @@ architecture Behavioral of processor is
   -------------------------------------
   -- For execute stage
   signal inst_type_I_id: std_logic;
+  signal imm_to_alu_id : std_logic;
   signal alu_funct_id  : alu_funct_t;
   signal alu_shamt_id  : alu_shamt_t;
 
@@ -180,6 +181,7 @@ begin
       , mem_wen     => mem_wen_id
       , reg_wen     => reg_wen_id
       , inst_type_I => inst_type_I_id
+      , imm_to_alu  => imm_to_alu_id
       , alu_funct   => alu_funct_id
       , alu_shamt   => alu_shamt_id
 			)
@@ -206,6 +208,8 @@ begin
       --For execute
       , inst_type_I_in    => inst_type_I_id
       , inst_type_I_out   => inst_type_I_ex
+      , imm_to_alu_in     => imm_to_alu_id
+      , imm_to_alu_out    => imm_to_alu_ex
       , alu_funct_in      => alu_funct_id
       , alu_funct_out     => alu_funct_ex
       , alu_shamt_in      => alu_shamt_id
@@ -237,6 +241,7 @@ begin
 			, data_2				=> data_2_ex
 			, instruction		=> instruction_ex
 			, inst_type_I		=> inst_type_I_ex
+			, imm_to_alu		=> imm_to_alu_ex
 			, alu_funct	    => alu_funct_ex
 			, alu_shamt	    => alu_shamt_ex
 			, alu_result		=> alu_result_ex

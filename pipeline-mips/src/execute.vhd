@@ -10,6 +10,7 @@ entity execute is
 		; data_2				: in		word_t
 		; instruction  : in 		word_t
 		; inst_type_I		: in 		std_logic
+		; imm_to_alu		: in 		std_logic
 		; alu_funct	    : in 		alu_funct_t
 		; alu_shamt     : in 		alu_funct_t
 		; alu_result		: out 	word_t
@@ -52,7 +53,7 @@ begin
 		;
     
     immediate_extended <= std_logic_vector(resize(signed(immediate), 32));
-    operand_right <= immediate_extended when inst_type_I = '1'
+    operand_right <= immediate_extended when imm_to_alu = '1'
 				else	 data_2;
 
   write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'

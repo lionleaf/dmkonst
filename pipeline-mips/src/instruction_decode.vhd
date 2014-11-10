@@ -20,6 +20,7 @@ entity instruction_decode is
     ; mem_wen     : out  std_logic
     ; reg_wen     : out  std_logic
     ; inst_type_I : out  std_logic
+    ; imm_to_alu : out  std_logic
     ; alu_funct   : out  alu_funct_t
     ; alu_shamt   : out  alu_shamt_t
     )
