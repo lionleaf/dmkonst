@@ -17,6 +17,16 @@ entity execute is
 		; alu_zero			: out		std_logic
 		; branch_address: out		addr_t
 		; write_reg_dst	: out		reg_t
+
+        -- Forwarded data
+        ; forwarded_data_ex_mem : in  word_t
+        ; forwarded_data_mem_wb : in  word_t
+
+        -- Control signals for forwarding
+        ; data_1_forward_ex_mem_en : in std_logic
+        ; data_2_forward_ex_mem_en : in std_logic
+        ; data_1_forward_mem_wb_en : in std_logic
+        ; data_2_forward_mem_wb_en : in std_logic
 		)
 	;
 end execute;
@@ -27,10 +37,48 @@ architecture Behavioral of execute is
 	signal operand_right		  : word_t;
 	signal immediate_extended : word_t;
 
-begin
-	
+    signal forwarded_data_1 : word_t;
+    signal forwarded_data_2 : word_t;
 
-	
+begin
+
+    forwarding_muxes:
+        process ( data_1
+                , data_2
+                , forwarded_data_mem_wb
+                , forwarded_data_ex_mem
+                , data_1_forward_ex_mem_en
+                , data_2_forward_ex_mem_en
+                , data_1_forward_mem_wb_en
+                , data_2_forward_mem_wb_en
+                )
+        begin
+
+            forwarded_data_1 <= data_1;
+
+            if data_1_forward_mem_wb_en = '1' then
+                forwarded_data_1 <= forwarded_data_mem_wb;
+            end if;
+
+            -- Forwarding from ex_mem takes precedence, as it is fresher.
+            if data_1_forward_ex_mem_en = '1' then
+                forwarded_data_1 <= forwarded_data_ex_mem;
+            end if;
+
+
+            forwarded_data_2 <= data_2;
+
+            if data_2_forward_mem_wb_en = '1' then
+                forwarded_data_2 <= forwarded_data_mem_wb;
+            end if;
+
+            -- Forwarding from ex_mem takes precedence, as it is fresher.
+            if data_2_forward_ex_mem_en = '1' then
+                forwarded_data_2 <= forwarded_data_ex_mem;
+            end if;
+
+        end process;
+
 	branch_address_select:
 		entity work.branch_address_select
 		port map
@@ -43,7 +91,7 @@ begin
 	alu:
 		entity work.alu
 		port map
-			( operand_left   => data_1
+			( operand_left   => forwarded_data_1
 			, operand_right  => operand_right
 			, operator       => alu_funct
 			, result_is_zero => alu_zero
@@ -54,7 +102,7 @@ begin
     
     immediate_extended <= std_logic_vector(resize(signed(immediate), 32));
     operand_right <= immediate_extended when imm_to_alu = '1'
-				else	 data_2;
+				else forwarded_data_2;
 
   write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'
               else  instruction(15 downto 11);
