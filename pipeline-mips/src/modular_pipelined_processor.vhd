@@ -84,6 +84,10 @@ architecture Behavioral of processor is
   signal mem_to_reg_id : std_logic; 
   signal reg_wen_id    : std_logic;
 
+  -- Signals to forwarding-unit
+  signal rs_id : reg_t;
+  signal rt_id : reg_t;
+
 
   -- Signals in execute stage
   -------------------------------------
@@ -101,6 +105,16 @@ architecture Behavioral of processor is
   signal mem_to_reg_ex : std_logic; 
   signal reg_wen_ex    : std_logic;
 
+  -- Control signals for forwarding
+  signal data_1_forward_ex_mem_en : std_logic;
+  signal data_2_forward_ex_mem_en : std_logic;
+  signal data_1_forward_mem_wb_en : std_logic;
+  signal data_2_forward_mem_wb_en : std_logic;
+
+  -- Signals to forwarding-unit
+  -------------------------------------
+  signal rs_ex : reg_t;
+  signal rt_ex : reg_t;
 
   -- Signals in memory stage
   -------------------------------------
@@ -126,7 +140,6 @@ architecture Behavioral of processor is
 
 	subtype reg_number is std_logic_vector(4 downto 0);
 	
-  alias rt_ex : reg_number is instruction_ex(20 downto 16);
   alias register_rd_ex : reg_number is instruction_ex(15 downto 11);
 	
 	
@@ -175,7 +188,9 @@ begin
       -- Out
 			,	data_1			=> data_1_id
 			,	data_2			=> data_2_id
-      
+      -- Register numbers used. Used in forwarding-unit.
+      , rs_out => rs_id
+      , rt_out => rt_id
       -- Control signals out
       , branch_en   => branch_en_id
       , mem_to_reg  => mem_to_reg_id
@@ -228,11 +243,30 @@ begin
       , reg_wen_in        => reg_wen_id
       , reg_wen_out       => reg_wen_ex
 
+      -- For the forwarding unit
+      , rs_in  => rs_id
+      , rs_out => rs_ex
+      , rt_in  => rt_id
+      , rt_out => rt_ex
 			)
 		;
 	
 	--------------- Execution ---------------	
 	
+    forwarding_unit:
+        entity work.forwarding_unit
+        port map
+            ( rs => rs_ex
+            , rt => rt_ex
+            , forwarded_rd_ex_mem => write_reg_dst_mem
+            , forwarded_rd_mem_wb => write_reg_dst_wb
+
+            -- Control signals for forwarding
+            , data_1_forward_ex_mem_en => data_1_forward_ex_mem_en
+            , data_2_forward_ex_mem_en => data_2_forward_ex_mem_en
+            , data_1_forward_mem_wb_en => data_1_forward_mem_wb_en
+            , data_2_forward_mem_wb_en => data_2_forward_mem_wb_en
+            ) ;
 	
 	execute:
 		entity work.execute
@@ -249,6 +283,16 @@ begin
 			, alu_zero			=> alu_zero_ex
 			, branch_address	=> branch_addr_ex
       , write_reg_dst => write_reg_dst_ex
+
+            -- Forwarded data
+            , forwarded_data_ex_mem => write_data_wb
+            , forwarded_data_mem_wb => alu_result_mem
+
+            -- Control signals for forwarding
+            , data_1_forward_ex_mem_en => data_1_forward_ex_mem_en
+            , data_2_forward_ex_mem_en => data_2_forward_ex_mem_en
+            , data_1_forward_mem_wb_en => data_1_forward_mem_wb_en
+            , data_2_forward_mem_wb_en => data_2_forward_mem_wb_en
 			)
 		;
 

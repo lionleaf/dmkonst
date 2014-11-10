@@ -37,7 +37,7 @@ begin
             data_2_forward_mem_wb_en <= '0';
 
             -- Register 0 will not change when written to.
-            if rs /= X"0" then
+            if rs /= "00000" then
                 if rs = forwarded_rd_mem_wb then
                     data_1_forward_mem_wb_en <= '1';
                 end if;
@@ -47,7 +47,7 @@ begin
             end if;
 
             -- Register 0 will not change when written to.
-            if rt /= X"0" then
+            if rt /= "00000" then
                 if rt = forwarded_rd_mem_wb then
                     data_2_forward_mem_wb_en <= '1';
                 end if;
