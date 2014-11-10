@@ -123,7 +123,8 @@
       <association xil_pn:name="Implementation"/>
     </file>
     <file xil_pn:name="src/uart/test_utils.vhd" xil_pn:type="FILE_VHDL"/>
-    <file xil_pn:name="src/DualPortMem.xco" xil_pn:type="FILE_COREGEN">
+    <file xil_pn:name="src/DualPortMem.xco" xil_pn:type="FILE_COREGEN"/>
+    <file xil_pn:name="src/forwarding_unit.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation"/>
       <association xil_pn:name="Implementation"/>
     </file>
