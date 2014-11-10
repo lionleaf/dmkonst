@@ -8,20 +8,21 @@ entity execute is
 		( incremented_pc: in		addr_t
 		; data_1				: in		word_t
 		; data_2				: in		word_t
-		; instructions  : in 		word_t
-		; alu_source		: in 		std_logic
+		; instruction  : in 		word_t
+		; inst_type_I		: in 		std_logic
 		; alu_funct	    : in 		alu_funct_t
 		; alu_shamt     : in 		alu_funct_t
 		; alu_result		: out 	word_t
 		; alu_zero			: out		std_logic
-		; branch_address	: out		addr_t
+		; branch_address: out		addr_t
+		; write_reg_dst	: out		reg_t
 		)
 	;
 end execute;
 
 architecture Behavioral of execute is
 
-	alias immediate			: std_logic_vector(15 downto 0) is instructions(15 downto 0);
+	alias immediate			: std_logic_vector(15 downto 0) is instruction(15 downto 0);
 	signal operand_right		: word_t;
 
 begin
@@ -49,10 +50,11 @@ begin
 			)
 		;
     
-  operand_right <= std_logic_vector(resize(signed(immediate), 32)) when alu_source = '1'
+  operand_right <= std_logic_vector(resize(signed(immediate), 32)) when inst_type_I = '1'
 				else	 data_2;
 
-		
+  write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'
+              else  instruction(15 downto 11);
 		
 	
 end Behavioral;

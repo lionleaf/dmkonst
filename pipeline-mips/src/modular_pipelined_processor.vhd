@@ -235,13 +235,14 @@ begin
 			(  incremented_pc	=> incremented_pc_ex
 			, data_1				=> data_1_ex
 			, data_2				=> data_2_ex
-			, instructions		=> instruction_ex
-			, alu_source		=> alu_source_ex
+			, instruction		=> instruction_ex
+			, inst_type_I		=> inst_type_I_ex
 			, alu_funct	    => alu_funct_ex
 			, alu_shamt	    => alu_shamt_ex
 			, alu_result		=> alu_result_ex
 			, alu_zero			=> alu_zero_ex
 			, branch_address	=> branch_addr_ex
+      , write_reg_dst => write_reg_dst_ex
 			)
 		;
 
@@ -282,14 +283,15 @@ begin
 	--------------- Memory ---------------
 
   pc_source <= branch_en_mem and alu_zero_mem;
-
+  
+  dmem_write_enable <= mem_wen_mem;
+  dmem_address <= alu_result_mem(7 downto 0);
+  
 	mem_to_wb_pipe:
 		entity work.mem_to_wb_pipe
 		port map
 			(  clk              => clk
 			,  reset            => reset
-			,  read_data_in     => dmem_data_in
-			,  read_data_out    => mem_data_wb
 			,  alu_result_in    => alu_result_mem
 			,  alu_result_out   => alu_result_wb
 			,  write_reg_dst_in  => write_reg_dst_mem
@@ -305,9 +307,10 @@ begin
 		;
 		
 	--------------- Write Back ---------------
-	write_data_wb <= mem_data_wb when mem_to_reg_wb = '1'
+  
+  --dmem_data_in is already delayed a cycle, so no need to send it through the pipe
+	write_data_wb <= dmem_data_in when mem_to_reg_wb = '1'
 			        else alu_result_wb;
   
-  dmem_address <= alu_result_mem(7 downto 0);
 	
 end Behavioral;

@@ -12,8 +12,6 @@ entity mem_to_wb_pipe is
     Port 
        (   clk              : in      std_logic
         ;  reset            : in      std_logic
-        ;  read_data_in     : in      word_t
-        ;  read_data_out    : out     word_t
         ;  alu_result_in    : in      word_t
         ;  alu_result_out   : out     word_t
         ;  write_reg_dst_in  : in      reg_t
@@ -36,13 +34,13 @@ begin
     begin
     if rising_edge(clk) then
         if reset = '1' then -- synchronous reset 
-          read_data_OUT    <= (others => '0');
           alu_result_out   <= (others => '0');
           write_reg_dst_out <= (others => '0');
+          
+          --Control
           reg_wen_out      <= '0';
           mem_to_reg_out   <= '0';
         else 
-          read_data_out    <= read_data_in;
           alu_result_out   <= alu_result_in;
           write_reg_dst_out <= write_reg_dst_in;
           

@@ -24,7 +24,7 @@ architecture Behavioral of decode is
   alias opcode is instruction(31 downto 26);
 begin
 
-  process (instruction)
+  process (instruction, processor_enable)
     begin
       --default values
      branch_en   <= '0';
