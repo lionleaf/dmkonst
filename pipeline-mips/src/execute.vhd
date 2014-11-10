@@ -23,7 +23,8 @@ end execute;
 architecture Behavioral of execute is
 
 	alias immediate			: std_logic_vector(15 downto 0) is instruction(15 downto 0);
-	signal operand_right		: word_t;
+	signal operand_right		  : word_t;
+	signal immediate_extended : word_t;
 
 begin
 	
@@ -50,7 +51,8 @@ begin
 			)
 		;
     
-  operand_right <= std_logic_vector(resize(signed(immediate), 32)) when inst_type_I = '1'
+    immediate_extended <= std_logic_vector(resize(signed(immediate), 32));
+    operand_right <= immediate_extended when inst_type_I = '1'
 				else	 data_2;
 
   write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'

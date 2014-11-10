@@ -51,12 +51,12 @@ begin
 --                pc_control <= jump;
           when op_lw => -- lw load word
               mem_to_reg <= '1';
-              alu_funct <= alu_sub;
+              alu_funct <= alu_add;
               inst_type_I <= '1';
               reg_wen     <= '1';
 
           when op_sw => -- sw store word
-              alu_funct <= alu_sub;
+              alu_funct <= alu_add;
               inst_type_I <= '1';
               mem_wen <= '1';
 

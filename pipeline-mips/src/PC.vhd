@@ -17,7 +17,7 @@ entity PC is
 end PC;
 
 architecture Behavioral of PC is
-    signal PC_i    : addr_t;
+    signal PC_i    : addr_t := (others => '0');
     signal incremented_PC_i : addr_t;
     signal next_PC : addr_t;
 begin
@@ -30,11 +30,11 @@ begin
     next_PC <=  branch_addr       when pc_source = '1'
            else incremented_PC_i;
 
-    process (reset, clk)
+    process (clk)
     begin
         if rising_edge(clk) then
             if reset = '1' then
-                PC_i <= (others => '0');
+                PC_i <= (others => '1'); --Will wrap around to 0 when processor enable is set.
             elsif processor_enable = '1' then
                 PC_i <= next_PC;
             end if;
