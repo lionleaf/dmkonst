@@ -33,7 +33,7 @@ begin
             when alu_or  => result_i <= op_left_i or  op_right_i;
             when alu_sll => result_i <= op_right_i sll to_integer(signed(shamt));
             when alu_slt =>
-                if op_left_i < op_left_i
+                if op_left_i < op_right_i
                     then result_i <= to_signed(1, 32);
                     else result_i <= to_signed(0, 32);
                 end if;
