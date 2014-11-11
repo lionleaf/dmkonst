@@ -6,10 +6,11 @@ use work.defs.all;
 entity decode is
     Port
         ( instruction : in   inst_t
-        ; processor_enable : in  std_logic
+        ; enable : in  std_logic
         ; branch_en   : out  std_logic
         ; mem_to_reg  : out  std_logic
         ; mem_wen     : out  std_logic
+        ; mem_read    : out  std_logic
         ; reg_wen     : out  std_logic
         ; inst_type_I : out  std_logic
         ; imm_to_alu  : out  std_logic
@@ -27,12 +28,13 @@ architecture Behavioral of decode is
   alias instruction_shamt is instruction(10 downto 6);
 begin
 
-  process (instruction, processor_enable)
+  process (instruction, enable)
     begin
       --default values
      branch_en   <= '0';
      mem_to_reg  <= '0';
      mem_wen     <= '0';
+     mem_read    <= '0';
      reg_wen     <= '0';
      inst_type_I <= '0';
      imm_to_alu  <= '0';
@@ -40,7 +42,7 @@ begin
      alu_shamt   <= (others => '0');
      
      -- We send out 0s if processor is disabled, a nop instruction.
-     if processor_enable = '1' then
+     if enable = '1' then
        case opcode is
           when op_add => -- ALU operation (and, or, add, sub, slt, sll)
               reg_wen <= '1';
@@ -56,6 +58,7 @@ begin
 --                pc_control <= jump;
           when op_lw => -- lw load word
               mem_to_reg  <= '1';
+              mem_read    <= '1';
               alu_funct   <= alu_add;
               inst_type_I <= '1';
               imm_to_alu  <= '1';

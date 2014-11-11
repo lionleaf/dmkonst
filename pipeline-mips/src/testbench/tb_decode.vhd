@@ -9,15 +9,15 @@ architecture behavior of tb_decode is
     -- component declaration for the unit under test (uut)
     component decode
     port
-        ( opcode           : in   std_logic_vector(5 downto 0)
-        ; write_enable     : in   std_logic
-        ; reg_dest         : out  std_logic
-        ; pc_control       : out  pc_control_t
-        ; mem_to_reg       : out  std_logic
-        ; alu_override     : out  alu_override_t
-        ; mem_write_enable : out  std_logic
-        ; alu_src          : out  std_logic
-        ; reg_write_enable : out  std_logic
+        ( instruction 		: in   inst_t
+        ; processor_enable : in  std_logic
+        ; branch_en   		: out  std_logic
+        ; mem_to_reg  		: out  std_logic
+        ; mem_wen     		: out  std_logic
+        ; reg_wen     		: out  std_logic
+        ; inst_type_I 		: out  std_logic
+        ; alu_funct   		: out  alu_funct_t
+        ; alu_shamt   		: out  alu_shamt_t
         );
     end component;
 

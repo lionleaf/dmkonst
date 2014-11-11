@@ -35,6 +35,7 @@ architecture Behavioral of processor is
 	signal pc_source					:	std_logic;
 		
   signal instruction_ex		:  std_logic_vector (31 downto 0);
+  signal instruction_id		:  std_logic_vector (31 downto 0);
 	
 	signal data_1_id				:	std_logic_vector (31 downto 0);
 	signal data_2_id				:	std_logic_vector (31 downto 0);
@@ -73,6 +74,7 @@ architecture Behavioral of processor is
   -- For execute stage
   signal inst_type_I_id: std_logic;
   signal imm_to_alu_id : std_logic;
+  signal mem_read_id   : std_logic;
   signal alu_funct_id  : alu_funct_t;
   signal alu_shamt_id  : alu_shamt_t;
 
@@ -93,9 +95,10 @@ architecture Behavioral of processor is
   -------------------------------------
   -- Consumed in execute
   signal inst_type_I_ex : std_logic;
-  signal imm_to_alu_ex : std_logic;
-  signal alu_funct_ex  : alu_funct_t;
-  signal alu_shamt_ex  : alu_shamt_t;
+  signal imm_to_alu_ex  : std_logic;
+  signal mem_read_ex    : std_logic;
+  signal alu_funct_ex   : alu_funct_t;
+  signal alu_shamt_ex   : alu_shamt_t;
 
   -- For memory stage
   signal branch_en_ex  : std_logic;
@@ -137,11 +140,22 @@ architecture Behavioral of processor is
   signal reg_wen_wb    : std_logic;
 
 
+	----------------------------------
+  --     HAZARD CONTROL
+  ----------------------------------
+  
+  --  Hazard Detection Unit
+  ----------------------------------
+  
+  --insert_stall should invalidate instruction in ID by setting it to a nop
+  --and freeze the PC register
+  signal insert_stall : std_logic;
 
-	subtype reg_number is std_logic_vector(4 downto 0);
+  alias reg_rt_ex : reg_t is instruction_ex(20 downto 16);
+  alias reg_rd_ex : reg_t is instruction_ex(15 downto 11);
 	
-  alias register_rd_ex : reg_number is instruction_ex(15 downto 11);
-	
+  alias reg_rs_id : reg_t is instruction_id(25 downto 21);
+  alias reg_rt_id : reg_t is instruction_id(20 downto 16);
 	
 	signal instruction_mem_in  : reg_t;
 begin
@@ -154,8 +168,9 @@ begin
 			( clk							  =>	clk
 			, reset						  => reset
       , processor_enable  => processor_enable
+      , insert_stall      => insert_stall
 			, incremented_pc 		=> incremented_pc_if
-			, branch_adress			=> branch_addr_mem
+			, branch_addr			  => branch_addr_mem
 			, branch_en					=> branch_en_if
       , pc                => imem_address
 			)
@@ -164,20 +179,23 @@ begin
 		if_to_id_pipe:
 		entity work.if_to_id_pipe
 		port map 
-			( reset              => reset
-			, clk                => clk
-			, incremented_pc_in  =>	incremented_pc_if
+			( reset               => reset
+			, clk                 => clk
+			, insert_stall			  => insert_stall
+			, incremented_pc_in   => incremented_pc_if
 			, incremented_pc_out	=> incremented_pc_id
+			, instruction_in	    => imem_data_in
+			, instruction_out	    => instruction_id
 			)
 		;
 		
 	--------------- Instruction Decode --------------- 
-		
+    
 	instruction_decode:
 		entity work.instruction_decode
 		port map
 			(	clk				=> clk
-			,	instruction	=>	imem_data_in
+			,	instruction	=>	instruction_id
       , processor_enable  => processor_enable
 
       -- Write back from wb stage
@@ -188,13 +206,19 @@ begin
       -- Out
 			,	data_1			=> data_1_id
 			,	data_2			=> data_2_id
+
       -- Register numbers used. Used in forwarding-unit.
       , rs_out => rs_id
       , rt_out => rt_id
+      
+      -- Hazard handling
+			,	insert_stall			=> insert_stall
+      
       -- Control signals out
       , branch_en   => branch_en_id
       , mem_to_reg  => mem_to_reg_id
       , mem_wen     => mem_wen_id
+      , mem_read    => mem_read_id
       , reg_wen     => reg_wen_id
       , inst_type_I => inst_type_I_id
       , imm_to_alu  => imm_to_alu_id
@@ -202,6 +226,16 @@ begin
       , alu_shamt   => alu_shamt_id
 			)
 		;
+    
+  hazard_detection_unit:
+    entity work.hazard_detection
+    port map
+      ( mem_read_ex => mem_read_ex 
+      , reg_rt_ex   => reg_rt_ex   
+      , reg_rs_id   => reg_rs_id   
+      , reg_rt_id   => reg_rt_id   
+      , insert_stall=> insert_stall
+      );
 		
 	id_to_ex_pipe:
 		entity work.id_to_ex_pipe
@@ -217,7 +251,7 @@ begin
 			, data_1_out        => data_1_ex
 			, data_2_in         => data_2_id
 			, data_2_out        => data_2_ex
-			, instructions_in   => imem_data_in
+			, instructions_in   => instruction_id
 			, instructions_out  => instruction_ex
 
       --Control signals
@@ -226,6 +260,8 @@ begin
       , inst_type_I_out   => inst_type_I_ex
       , imm_to_alu_in     => imm_to_alu_id
       , imm_to_alu_out    => imm_to_alu_ex
+      , mem_read_in       => mem_read_id
+      , mem_read_out      => mem_read_ex
       , alu_funct_in      => alu_funct_id
       , alu_funct_out     => alu_funct_ex
       , alu_shamt_in      => alu_shamt_id

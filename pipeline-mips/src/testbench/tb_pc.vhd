@@ -1,50 +1,40 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.test_utils.all;
 use work.defs.all;
-
-ENTITY tb_pc IS
-END tb_pc;
+  
+entity tb_pc is
+end tb_pc;
  
-ARCHITECTURE behavior OF tb_pc IS 
- 
-    COMPONENT PC
-    PORT(
-         reset : IN  std_logic;
-         update_pc : IN  std_logic;
-         clk : IN  std_logic;
-         pc_control : IN pc_control_t;
-         alu_zero : IN  boolean;
-         immediate : IN  std_logic_vector(15 downto 0);
-         PC : BUFFER  addr_t
-        );
-    END COMPONENT;
-    
-
+architecture behavior of tb_pc is 
    --Inputs
-   signal reset : std_logic := '0';
-   signal update_pc : std_logic := '0';
-   signal clk : std_logic := '0';
-   signal pc_control : pc_control_t;
-   signal alu_zero : boolean := false;
-   signal immediate : std_logic_vector(15 downto 0) := (others => '0');
+   signal reset 					: std_logic := '0';
+   signal clk 						: std_logic := '0';
+   signal processor_enable 	: std_logic := '0';
+   signal branch_en 				: std_logic := '0';
+   signal branch_addr 			: addr_t 	:= (others => '0');
 
-   -- OUT
-   signal PC_sig : addr_t;
+ 	--Outputs
+   signal PC 						: addr_t;
+   signal incremented_PC 		: addr_t;
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
  
-BEGIN
+begin
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: PC PORT MAP (
-          reset => reset,
-          update_pc => update_pc,
-          clk => clk,
-          pc_control => pc_control,
-          alu_zero => alu_zero,
-          immediate => immediate,
-          PC => PC_sig        );
+   uut: 
+		entity work.PC port map (
+          reset 					=> reset,
+          clk 						=> clk,
+          processor_enable 	=> processor_enable,
+          branch_en 				=> branch_en,
+          branch_addr 			=> branch_addr,
+          PC 						=> PC,
+          incremented_PC 		=> incremented_PC
+        );
 
    -- Clock process definitions
    clk_process :process
@@ -58,90 +48,122 @@ BEGIN
 
    -- Stimulus process
    stim_proc: process
-   procedure check(condition:boolean; error_msg:string) is begin
-            assert condition report error_msg severity failure;
-        end procedure check;
-   begin
-      update_pc <= '0';   
-      reset <= '1';
-      
-      wait for 100ns;
-      
-      reset   <= '0';
-      pc_control <= step;
-      alu_zero   <= false;
-      immediate  <= X"1337";
-      
+	
+	----------Check Reset-----------
+	procedure check_reset
+		is begin
+		
+		report "== Testing Reset ==";
+		
+		reset 				<= '1';
+		
+		branch_en 			<= '0';
+		processor_enable 	<= '0';
+		
+		wait for clk_period;
+		check(PC = (PC'range => '1'), "PC should be zeros when reset is enabled.");
+		
+		branch_en 			<= '0';
+		processor_enable 	<= '1';
+		
+		wait for clk_period;
+		check(PC = (PC'range => '1'), "PC should be zeros when reset is enabled.");
+		
+		branch_en 			<= '1';
+		processor_enable 	<= '0';
+		
+		wait for clk_period;
+		check(PC = (PC'range => '1'), "PC should be zeros when reset is enabled.");
+		
+		branch_en 			<= '1';
+		processor_enable 	<= '1';
+		
+		wait for clk_period;
+		check(PC = (PC'range => '1'), "PC should be zeros when reset is enabled.");
+	
+	end procedure check_reset;
+	
+
+	
+	----------Processor Enable-----------
+	procedure check_program_counter
+		is begin
+		
+		report "== Testing Processor enable ==";
+		
+		reset 				<= '0';
+		processor_enable 	<= '1';
+		branch_en			<= '0';
+		wait for clk_period;
+		
+		branch_addr 		<= X"00";
+		processor_enable 	<= '0';
+		
+		wait for clk_period;
+		check(PC = X"00",  integer'image(to_integer(signed(pc))) & ": PC should  not change value while the processor is disabled.");
+		
+		wait for clk_period;
+		processor_enable 	<= '1';
+		check(processor_enable = '0', std_logic'image(processor_enable) & ": processor_enable should be low until next cycle after enabling.");
+		
+		check(PC = X"00", integer'image(to_integer(signed(pc))) & ": PC should  not change value while the processor is disabled.");
+		
+		wait for clk_period;
+		check(PC = X"01", integer'image(to_integer(signed(pc))) & ": PC should  not change the first cycle after the processor is enabled.");
+		check(processor_enable = '1', std_logic'image(processor_enable) & ": processor_enable should be high one cycle after enabling.");
+		
+		wait for clk_period; 
+		check(PC = X"02", integer'image(to_integer(signed(pc))) & ": PC should have value 0x02 after two clock cycle while the processor is enabled.");
+		
+		wait for clk_period; 
+		check(PC = X"03", integer'image(to_integer(signed(pc))) & ": PC should have value 0x03 after three clock cycle while the processor is enabled.");
+		
+		wait for clk_period; 
+		check(PC = X"04", integer'image(to_integer(signed(pc))) & ": PC should have value 0x04 after three clock cycle while the processor is enabled.");
+		
+		wait for clk_period; 
+		check(PC = X"05", integer'image(to_integer(signed(pc))) & ": PC should have value 0x05 after three clock cycle while the processor is enabled.");
+		
+	end procedure check_program_counter;
+	
+	procedure check_branch
+		is begin
+		
+		report "== Testing branch ==";
+		
+		branch_addr 		<= X"10";
+		processor_enable 	<= '1';
+		reset 				<= '0';
+		branch_en 			<= '0';
+		
+		wait for clk_period;
+		branch_en <= '1';
+		
+		wait for clk_period;
+		check(PC = X"10", integer'image(to_integer(signed(pc))) & ": PC should change to branch address when branch is enabled");
+		branch_en <= '0';
+		
+		wait for clk_period;
+		check(PC = X"11", integer'image(to_integer(signed(pc))) & ": PC should start to increment when branch_en is low");
+		
+		wait for clk_period;
+		check(PC = X"12", integer'image(to_integer(signed(pc))) & ": PC should continue to increment.");
+		
+		
+	end procedure check_branch;
+   
+	begin		
+      -- hold reset state for 100 ns.
+      wait for 100 ns;	
+	
       wait for clk_period*10;
+			check_reset;
+			check_program_counter;
+			check_branch;
       
-      check(PC_sig = X"00", "PC is not 0 after reset");
-      wait for clk_period;
-
-      
-      report "Incrementing PC by one!";
-      
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-      check(PC_sig = X"01", "PC is not 1 after first update.");
-      wait for clk_period;
-
-      report "Incrementing PC by one!";
-      
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-      check(PC_sig = X"02", "PC is not 2 after step.");
-      wait for clk_period;
-
-      report "Incrementing PC by one!";
-      
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-      check(PC_sig = X"03", "PC is not 3 after step.");
-      wait for clk_period;
-
-      report "Jumping to 0x15!";
-      
-      pc_control <= jump;
-      immediate <= X"0015";
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-
-      check(PC_sig = X"15", "PC is not 0x15 after jump.");
-      wait for clk_period;
-      
-      report "Testing a failed beq!";
-
-      pc_control <= branch;
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-      check(PC_sig = X"16", "PC is not 0x16 after not met beq.");
-      wait for clk_period;
-
-      report "Testing a beq!";
-
-      pc_control <= branch;
-      alu_zero   <= true;
-      immediate  <= X"0010";
-      update_pc <= '1';
-      wait for clk_period;
-      update_pc <= '0';
-
-      check(PC_sig = X"27", "PC is not 0x27 after met beq.");
-      wait for clk_period;
-     
-      report "---------TEST COMPLETED-----------!";
-      
+			report "== Test Success ==";
+		
       wait;
    end process;
 
-END;
+end;
