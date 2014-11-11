@@ -56,8 +56,14 @@ architecture Behavioral of processor is
   signal write_reg_dst_wb   : reg_t;
   	
     
+    
+  
   -- The memory data that might be written to reg
   signal mem_data_wb      : word_t;
+  
+  -- Memory to be written to data memory (during a store)
+  signal mem_write_data_ex      : word_t;
+  signal mem_write_data_mem      : word_t;
   
   -- The ALU result that might be written to reg
   signal alu_result_wb    : word_t;
@@ -321,6 +327,7 @@ begin
 			, alu_zero			=> alu_zero_ex
 			, branch_address	=> branch_addr_ex
       , write_reg_dst => write_reg_dst_ex
+      , mem_data      => mem_write_data_ex
 
             -- Forwarded data
             , forwarded_data_mem => alu_result_mem
@@ -347,8 +354,8 @@ begin
 			, zero_out          => alu_zero_mem
 			, alu_result_in     => alu_result_ex
 			, alu_result_out    => alu_result_mem
-			, data_2_in         => data_2_ex
-			, data_2_out        => dmem_data_out
+			, mem_write_data_in => mem_write_data_ex
+			, mem_write_data_out=> mem_write_data_mem
 			, write_reg_dst_in   => write_reg_dst_ex
 			, write_reg_dst_out  => write_reg_dst_mem
 
@@ -374,6 +381,7 @@ begin
   
   dmem_write_enable <= mem_wen_mem;
   dmem_address <= alu_result_mem(7 downto 0);
+  dmem_data_out <= mem_write_data_mem;
   
 	mem_to_wb_pipe:
 		entity work.mem_to_wb_pipe

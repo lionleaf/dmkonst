@@ -82,17 +82,15 @@ begin
             if reg_wen_wb = '1'
             and reg_rd_wb /= "00000"
             and reg_rd_wb = reg_rs_ex
-            and data_1_forward_mem_en_i = '0' --If both tries to forwad, mem is more recent.
             then
               data_1_forward_wb_en <= '1';
             end if;
             
             if reg_wen_wb = '1'
             and reg_rd_wb /= "00000"
-            and reg_rd_wb = reg_rs_ex
-            and data_2_forward_mem_en_i = '0' --If both tries to forwad, mem is more recent.
+            and reg_rd_wb = reg_rt_ex
             then
-              data_1_forward_wb_en <= '1';
+              data_2_forward_wb_en <= '1';
             end if;
 
         end process;
