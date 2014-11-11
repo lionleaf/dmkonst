@@ -256,10 +256,12 @@ begin
     forwarding_unit:
         entity work.forwarding_unit
         port map
-            ( rs_ex => rs_ex
-            , rt_ex => rt_ex
-            , forwarded_rd_mem => write_reg_dst_mem
-            , forwarded_rd_wb => write_reg_dst_wb
+            ( reg_rs_ex => rs_ex
+            , reg_rt_ex => rt_ex
+            , reg_rd_mem => write_reg_dst_mem
+            , reg_rd_wb => write_reg_dst_wb
+            , reg_wen_mem => reg_wen_mem
+            , reg_wen_wb => reg_wen_wb
 
             -- Control signals for forwarding
             , data_1_forward_mem_en => data_1_forward_mem_en
