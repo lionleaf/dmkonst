@@ -157,10 +157,10 @@ begin
 			( clk							  =>	clk
 			, reset						  => reset
       , processor_enable  => processor_enable
+      , insert_stall      => insert_stall
 			, incremented_pc 		=> incremented_pc_if
-			, branch_addr			=> branch_addr_mem
+			, branch_addr			  => branch_addr_mem
 			, branch_en					=> branch_en_if
-			, insert_stall			=> insert_stall
       , pc                => imem_address
 			)
 		;
@@ -168,17 +168,18 @@ begin
 		if_to_id_pipe:
 		entity work.if_to_id_pipe
 		port map 
-			( reset              => reset
-			, clk                => clk
-			, incremented_pc_in  =>	incremented_pc_if
+			( reset               => reset
+			, clk                 => clk
+			, insert_stall			  => insert_stall
+			, incremented_pc_in   => incremented_pc_if
 			, incremented_pc_out	=> incremented_pc_id
+			, instruction_in	    => imem_data_in
+			, instruction_out	    => instruction_id
 			)
 		;
 		
 	--------------- Instruction Decode --------------- 
-  
-  instruction_id <= imem_data_in;
-  
+    
 	instruction_decode:
 		entity work.instruction_decode
 		port map

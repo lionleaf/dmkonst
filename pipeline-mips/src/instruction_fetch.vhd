@@ -32,13 +32,14 @@ begin
 
     process (clk)
     begin
-        if rising_edge(clk) then
-            if reset = '1' then
-                PC_i <= (others => '1'); --Will wrap around to 0 when processor enable is set.
-            elsif processor_enable = '1' and insert_stall = '0' then
-                PC_i <= next_PC;
-            end if;
+      
+      if rising_edge(clk) then
+        if reset = '1' then
+          PC_i <= (others => '1'); --Will wrap around to 0 when processor enable is set.
+        elsif processor_enable = '1' and insert_stall = '0' then
+          PC_i <= next_PC;
         end if;
+      end if;
     end process;
 end Behavioral;
 

@@ -41,33 +41,23 @@ architecture Behavioral of instruction_decode is
     --Internal signals so that we can mux result with insert_stall
     --We only force some signals to 0 when stalling,
     --as many of them will have no effect when these are 0
-    signal mem_wen_i : std_logic;
-    signal reg_wen_i : std_logic;
+    signal decode_enable_i : std_logic;
 
 begin
 
-stall:
-  process(insert_stall)
-  begin
-    mem_wen  <= mem_wen_i;
-    reg_wen  <= reg_wen_i;
-    if insert_stall = '1' then
-      mem_wen  <= '0';
-      reg_wen  <= '0';
-    end if;
-  end process;
-
+decode_enable_i <= '1' when processor_enable = '1' and insert_stall = '0'
+              else '0';
 
    decode:
     entity work.decode
         port map
-            ( processor_enable => processor_enable
+            ( enable => decode_enable_i
             , instruction => instruction
             , branch_en   => branch_en
             , mem_to_reg  => mem_to_reg   
-            , mem_wen     => mem_wen_i  --Internal signal for stalling purposes
-            , mem_read    => mem_read   
-            , reg_wen     => reg_wen_i  --Internal signal for stalling purposes
+            , mem_wen     => mem_wen  --Internal signal for stalling purposes
+            , mem_read    => mem_read --Internal signal for stalling purposes
+            , reg_wen     => reg_wen  --Internal signal for stalling purposes
             , imm_to_alu  => imm_to_alu
             , inst_type_I => inst_type_I
             , alu_funct   => alu_funct
