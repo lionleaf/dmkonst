@@ -287,8 +287,8 @@ begin
       , write_reg_dst => write_reg_dst_ex
 
             -- Forwarded data
-            , forwarded_data_mem => write_data_wb
-            , forwarded_data_wb => alu_result_mem
+            , forwarded_data_mem => alu_result_mem
+            , forwarded_data_wb => write_data_wb
 
             -- Control signals for forwarding
             , data_1_forward_mem_en => data_1_forward_mem_en

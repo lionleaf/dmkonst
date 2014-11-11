@@ -111,9 +111,11 @@ DataMem:			entity work.DualPortMem port map (
 		end WriteInstructionWord;
 		
 		procedure FillInstructionMemory is
-			constant TEST_INSTRS : integer := 47;
+			constant TEST_INSTRS : integer := 49;
 			type InstrData is array (0 to TEST_INSTRS-1) of std_logic_vector(DATA_WIDTH-1 downto 0);
 			variable TestInstrData : InstrData := (
+                X"00000000", --noop
+                X"00000000", --noop
 				X"8C010001", --lw $1, 1($0)		/$1 =  2	
 				X"8C020002", --lw $2, 2($0)		/$2 = 10	
                 X"00000000", --noop
