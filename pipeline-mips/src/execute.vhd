@@ -19,14 +19,14 @@ entity execute is
 		; write_reg_dst	: out		reg_t
 
         -- Forwarded data
-        ; forwarded_data_ex_mem : in  word_t
-        ; forwarded_data_mem_wb : in  word_t
+        ; forwarded_data_mem : in  word_t
+        ; forwarded_data_wb : in  word_t
 
         -- Control signals for forwarding
-        ; data_1_forward_ex_mem_en : in std_logic
-        ; data_2_forward_ex_mem_en : in std_logic
-        ; data_1_forward_mem_wb_en : in std_logic
-        ; data_2_forward_mem_wb_en : in std_logic
+        ; data_1_forward_mem_en : in std_logic
+        ; data_2_forward_mem_en : in std_logic
+        ; data_1_forward_wb_en : in std_logic
+        ; data_2_forward_wb_en : in std_logic
 		)
 	;
 end execute;
@@ -45,36 +45,36 @@ begin
     forwarding_muxes:
         process ( data_1
                 , data_2
-                , forwarded_data_mem_wb
-                , forwarded_data_ex_mem
-                , data_1_forward_ex_mem_en
-                , data_2_forward_ex_mem_en
-                , data_1_forward_mem_wb_en
-                , data_2_forward_mem_wb_en
+                , forwarded_data_wb
+                , forwarded_data_mem
+                , data_1_forward_mem_en
+                , data_2_forward_mem_en
+                , data_1_forward_wb_en
+                , data_2_forward_wb_en
                 )
         begin
 
             forwarded_data_1 <= data_1;
 
-            if data_1_forward_mem_wb_en = '1' then
-                forwarded_data_1 <= forwarded_data_mem_wb;
+            if data_1_forward_wb_en = '1' then
+                forwarded_data_1 <= forwarded_data_wb;
             end if;
 
             -- Forwarding from ex_mem takes precedence, as it is fresher.
-            if data_1_forward_ex_mem_en = '1' then
-                forwarded_data_1 <= forwarded_data_ex_mem;
+            if data_1_forward_mem_en = '1' then
+                forwarded_data_1 <= forwarded_data_mem;
             end if;
 
 
             forwarded_data_2 <= data_2;
 
-            if data_2_forward_mem_wb_en = '1' then
-                forwarded_data_2 <= forwarded_data_mem_wb;
+            if data_2_forward_wb_en = '1' then
+                forwarded_data_2 <= forwarded_data_wb;
             end if;
 
             -- Forwarding from ex_mem takes precedence, as it is fresher.
-            if data_2_forward_ex_mem_en = '1' then
-                forwarded_data_2 <= forwarded_data_ex_mem;
+            if data_2_forward_mem_en = '1' then
+                forwarded_data_2 <= forwarded_data_mem;
             end if;
 
         end process;

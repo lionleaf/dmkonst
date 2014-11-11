@@ -106,10 +106,10 @@ architecture Behavioral of processor is
   signal reg_wen_ex    : std_logic;
 
   -- Control signals for forwarding
-  signal data_1_forward_ex_mem_en : std_logic;
-  signal data_2_forward_ex_mem_en : std_logic;
-  signal data_1_forward_mem_wb_en : std_logic;
-  signal data_2_forward_mem_wb_en : std_logic;
+  signal data_1_forward_mem_en : std_logic;
+  signal data_2_forward_mem_en : std_logic;
+  signal data_1_forward_wb_en : std_logic;
+  signal data_2_forward_wb_en : std_logic;
 
   -- Signals to forwarding-unit
   -------------------------------------
@@ -256,16 +256,16 @@ begin
     forwarding_unit:
         entity work.forwarding_unit
         port map
-            ( rs => rs_ex
-            , rt => rt_ex
-            , forwarded_rd_ex_mem => write_reg_dst_mem
-            , forwarded_rd_mem_wb => write_reg_dst_wb
+            ( rs_ex => rs_ex
+            , rt_ex => rt_ex
+            , forwarded_rd_mem => write_reg_dst_mem
+            , forwarded_rd_wb => write_reg_dst_wb
 
             -- Control signals for forwarding
-            , data_1_forward_ex_mem_en => data_1_forward_ex_mem_en
-            , data_2_forward_ex_mem_en => data_2_forward_ex_mem_en
-            , data_1_forward_mem_wb_en => data_1_forward_mem_wb_en
-            , data_2_forward_mem_wb_en => data_2_forward_mem_wb_en
+            , data_1_forward_mem_en => data_1_forward_mem_en
+            , data_2_forward_mem_en => data_2_forward_mem_en
+            , data_1_forward_wb_en => data_1_forward_wb_en
+            , data_2_forward_wb_en => data_2_forward_wb_en
             ) ;
 	
 	execute:
@@ -285,14 +285,14 @@ begin
       , write_reg_dst => write_reg_dst_ex
 
             -- Forwarded data
-            , forwarded_data_ex_mem => write_data_wb
-            , forwarded_data_mem_wb => alu_result_mem
+            , forwarded_data_mem => write_data_wb
+            , forwarded_data_wb => alu_result_mem
 
             -- Control signals for forwarding
-            , data_1_forward_ex_mem_en => data_1_forward_ex_mem_en
-            , data_2_forward_ex_mem_en => data_2_forward_ex_mem_en
-            , data_1_forward_mem_wb_en => data_1_forward_mem_wb_en
-            , data_2_forward_mem_wb_en => data_2_forward_mem_wb_en
+            , data_1_forward_mem_en => data_1_forward_mem_en
+            , data_2_forward_mem_en => data_2_forward_mem_en
+            , data_1_forward_wb_en => data_1_forward_wb_en
+            , data_2_forward_wb_en => data_2_forward_wb_en
 			)
 		;
 
