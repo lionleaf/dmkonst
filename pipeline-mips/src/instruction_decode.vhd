@@ -14,10 +14,14 @@ entity instruction_decode is
 		;	data_1			    : out word_t
 		;	data_2			    : out word_t
     
+    -- Hazard handling
+		;	insert_stall    : in std_logic
+    
     --Control outputs
     ; branch_en   : out  std_logic
     ; mem_to_reg  : out  std_logic
     ; mem_wen     : out  std_logic
+    ; mem_read    : out  std_logic
     ; reg_wen     : out  std_logic
     ; inst_type_I : out  std_logic
     ; imm_to_alu : out  std_logic
@@ -32,19 +36,28 @@ architecture Behavioral of instruction_decode is
     -- decomposition of instruction
     alias rs        : reg_t   is instruction(25 downto 21);
     alias rt        : reg_t    is instruction(20 downto 16);
+    
+    
+    --Internal signals so that we can mux result with insert_stall
+    --We only force some signals to 0 when stalling,
+    --as many of them will have no effect when these are 0
+    signal decode_enable_i : std_logic;
 
 begin
 
+decode_enable_i <= '1' when processor_enable = '1' and insert_stall = '0'
+              else '0';
 
    decode:
     entity work.decode
         port map
-            ( processor_enable => processor_enable
+            ( enable => decode_enable_i
             , instruction => instruction
             , branch_en   => branch_en
             , mem_to_reg  => mem_to_reg   
-            , mem_wen     => mem_wen     
-            , reg_wen     => reg_wen       
+            , mem_wen     => mem_wen  --Internal signal for stalling purposes
+            , mem_read    => mem_read --Internal signal for stalling purposes
+            , reg_wen     => reg_wen  --Internal signal for stalling purposes
             , imm_to_alu  => imm_to_alu
             , inst_type_I => inst_type_I
             , alu_funct   => alu_funct
