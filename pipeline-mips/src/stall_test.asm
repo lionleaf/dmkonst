@@ -1,23 +1,28 @@
-lw $4 2($0)
+#Setup by loading into $4
+lw $4 2($0) #$4 = 5
+noop        # Empty pipeline, we are not testing this.
 noop
 noop
 noop
+
+#Start test 1
+add $1 $4 $0   #$1 = 5
+noop           #Not testing this part, nop
 noop
-add $1 $4 $0
-noop
-noop
-lw $1 1($0)
-add $2 $1 $0
-noop
-noop
-noop
-sw $2 10($0)
-add $1 $4 $0
+lw $1 1($0)    #Load 10 into $1
+add $2 $1 $0   #Add 0 to $1. This is the hazard we are testing.
+noop	       #Not tested here
 noop
 noop
-lw $1 1($0)
+sw $2 10($0)  #Store the result. 10 if it works, otherwise 5
+
+# Test 2
+add $1 $4 $0  # $1 = 5
 noop
-sw $1 11($0)
+noop
+lw $1 1($0)   # load 10 into $1
+noop          # This is the task of the forwarding unit
+sw $1 11($0)  # Store $1. This is the hazard.
 
 
 
