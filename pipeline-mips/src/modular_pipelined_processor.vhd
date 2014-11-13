@@ -185,7 +185,7 @@ begin
 		if_to_id_pipe:
 		entity work.if_to_id_pipe
 		port map 
-			( reset               => reset
+			( reset               => reset or branch_en_if
 			, clk                 => clk
 			, insert_stall			  => insert_stall
 			, incremented_pc_in   => incremented_pc_if
@@ -250,7 +250,7 @@ begin
 			)
 		port map
 			( clk               => clk
-			, reset             => reset
+			, reset             => reset or branch_en_if
 			, incremented_PC_in => incremented_pc_id
 			, incremented_PC_out=> incremented_pc_ex
 			, data_1_in         => data_1_id
@@ -347,7 +347,7 @@ begin
 		entity work.ex_to_mem_pipe
 		port map
 			( clk               => clk
-			, reset             => reset
+			, reset             => reset or branch_en_if
 			, branch_addr_in    => branch_addr_ex
 			, branch_addr_out    => branch_addr_mem
 			, zero_in           => alu_zero_ex
