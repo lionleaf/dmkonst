@@ -18,10 +18,10 @@ entity ex_to_mem_pipe is
         ; zero_out          : out       std_logic
         ; alu_result_in     : in        word_t
         ; alu_result_out    : out    word_t
-        ; data_2_in         : in        word_t
-        ; data_2_out        : out       word_t
-        ; write_reg_dst_in   : in        reg_t
-        ; write_reg_dst_out  : out       reg_t
+        ; mem_write_data_in :  in        word_t
+        ; mem_write_data_out: out       word_t
+        ; write_reg_dst_in  : in        reg_t
+        ; write_reg_dst_out : out       reg_t
 
         --Control signals
         --Control signals for memory stage
@@ -48,7 +48,7 @@ begin
         if reset = '1' then -- synchronous reset 
           branch_addr_out     <= (others => '0');
           zero_out            <= '1';
-          data_2_out          <= (others => '0');
+          mem_write_data_out          <= (others => '0');
           alu_result_out      <= (others => '0');
           write_reg_dst_out    <= (others => '0');
 
@@ -60,7 +60,7 @@ begin
         else 
           branch_addr_out     <= branch_addr_in;
           zero_out            <= zero_in;
-          data_2_out          <= data_2_in;
+          mem_write_data_out          <= mem_write_data_in;
           alu_result_out      <= alu_result_in; -- so it maches dmem_address
           write_reg_dst_out    <= write_reg_dst_in;
 

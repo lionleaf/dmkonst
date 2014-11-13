@@ -45,6 +45,12 @@ entity id_to_ex_pipe is
         ; reg_wen_out       : out   std_logic
         ; mem_to_reg_in     : in    std_logic
         ; mem_to_reg_out    : out   std_logic
+
+        -- For the forwarding unit
+        ; rs_in             : in    reg_t
+        ; rs_out            : out   reg_t
+        ; rt_in             : in    reg_t
+        ; rt_out            : out   reg_t
        );
 end id_to_ex_pipe;
 
@@ -69,6 +75,8 @@ begin
            mem_wen_out        <= '0';
            reg_wen_out        <= '0';
            mem_to_reg_out     <= '0';
+           rs_out             <= (others => '0');
+           rt_out             <= (others => '0');
         else 
            incremented_PC_out <= incremented_PC_in;
            instructions_out   <= instructions_in;
@@ -83,6 +91,8 @@ begin
            mem_wen_out        <= mem_wen_in;
            reg_wen_out        <= reg_wen_in;
            mem_to_reg_out     <= mem_to_reg_in ;
+           rs_out             <= rs_in;
+           rt_out             <= rt_in;
         end if;
     end if;    
     end process;

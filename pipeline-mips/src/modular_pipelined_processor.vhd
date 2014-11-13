@@ -56,8 +56,14 @@ architecture Behavioral of processor is
   signal write_reg_dst_wb   : reg_t;
   	
     
+    
+  
   -- The memory data that might be written to reg
   signal mem_data_wb      : word_t;
+  
+  -- Memory to be written to data memory (during a store)
+  signal mem_write_data_ex      : word_t;
+  signal mem_write_data_mem      : word_t;
   
   -- The ALU result that might be written to reg
   signal alu_result_wb    : word_t;
@@ -86,6 +92,10 @@ architecture Behavioral of processor is
   signal mem_to_reg_id : std_logic; 
   signal reg_wen_id    : std_logic;
 
+  -- Signals to forwarding-unit
+  signal rs_id : reg_t;
+  signal rt_id : reg_t;
+
 
   -- Signals in execute stage
   -------------------------------------
@@ -104,6 +114,16 @@ architecture Behavioral of processor is
   signal mem_to_reg_ex : std_logic; 
   signal reg_wen_ex    : std_logic;
 
+  -- Control signals for forwarding
+  signal data_1_forward_mem_en : std_logic;
+  signal data_2_forward_mem_en : std_logic;
+  signal data_1_forward_wb_en : std_logic;
+  signal data_2_forward_wb_en : std_logic;
+
+  -- Signals to forwarding-unit
+  -------------------------------------
+  signal rs_ex : reg_t;
+  signal rt_ex : reg_t;
 
   -- Signals in memory stage
   -------------------------------------
@@ -137,11 +157,8 @@ architecture Behavioral of processor is
   --and freeze the PC register
   signal insert_stall : std_logic;
 
-  
- -- alias rt_ex : reg_t is instruction_ex(20 downto 16);
   alias reg_rt_ex : reg_t is instruction_ex(20 downto 16);
   alias reg_rd_ex : reg_t is instruction_ex(15 downto 11);
---  alias register_rd_ex : reg_t is instruction_ex(15 downto 11);
 	
   alias reg_rs_id : reg_t is instruction_id(25 downto 21);
   alias reg_rt_id : reg_t is instruction_id(20 downto 16);
@@ -195,6 +212,10 @@ begin
       -- Out
 			,	data_1			=> data_1_id
 			,	data_2			=> data_2_id
+
+      -- Register numbers used. Used in forwarding-unit.
+      , rs_out => rs_id
+      , rt_out => rt_id
       
       -- Hazard handling
 			,	insert_stall			=> insert_stall
@@ -264,11 +285,32 @@ begin
       , reg_wen_in        => reg_wen_id
       , reg_wen_out       => reg_wen_ex
 
+      -- For the forwarding unit
+      , rs_in  => rs_id
+      , rs_out => rs_ex
+      , rt_in  => rt_id
+      , rt_out => rt_ex
 			)
 		;
 	
 	--------------- Execution ---------------	
 	
+    forwarding_unit:
+        entity work.forwarding_unit
+        port map
+            ( reg_rs_ex => rs_ex
+            , reg_rt_ex => rt_ex
+            , reg_rd_mem => write_reg_dst_mem
+            , reg_rd_wb => write_reg_dst_wb
+            , reg_wen_mem => reg_wen_mem
+            , reg_wen_wb => reg_wen_wb
+
+            -- Control signals for forwarding
+            , data_1_forward_mem_en => data_1_forward_mem_en
+            , data_2_forward_mem_en => data_2_forward_mem_en
+            , data_1_forward_wb_en => data_1_forward_wb_en
+            , data_2_forward_wb_en => data_2_forward_wb_en
+            ) ;
 	
 	execute:
 		entity work.execute
@@ -285,6 +327,17 @@ begin
 			, alu_zero			=> alu_zero_ex
 			, branch_address	=> branch_addr_ex
       , write_reg_dst => write_reg_dst_ex
+      , mem_data      => mem_write_data_ex
+
+            -- Forwarded data
+            , forwarded_data_mem => alu_result_mem
+            , forwarded_data_wb => write_data_wb
+
+            -- Control signals for forwarding
+            , data_1_forward_mem_en => data_1_forward_mem_en
+            , data_2_forward_mem_en => data_2_forward_mem_en
+            , data_1_forward_wb_en => data_1_forward_wb_en
+            , data_2_forward_wb_en => data_2_forward_wb_en
 			)
 		;
 
@@ -301,8 +354,8 @@ begin
 			, zero_out          => alu_zero_mem
 			, alu_result_in     => alu_result_ex
 			, alu_result_out    => alu_result_mem
-			, data_2_in         => data_2_ex
-			, data_2_out        => dmem_data_out
+			, mem_write_data_in => mem_write_data_ex
+			, mem_write_data_out=> mem_write_data_mem
 			, write_reg_dst_in   => write_reg_dst_ex
 			, write_reg_dst_out  => write_reg_dst_mem
 
@@ -328,6 +381,7 @@ begin
   
   dmem_write_enable <= mem_wen_mem;
   dmem_address <= alu_result_mem(7 downto 0);
+  dmem_data_out <= mem_write_data_mem;
   
 	mem_to_wb_pipe:
 		entity work.mem_to_wb_pipe

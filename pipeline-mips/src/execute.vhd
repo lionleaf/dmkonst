@@ -17,6 +17,17 @@ entity execute is
 		; alu_zero			: out		std_logic
 		; branch_address: out		addr_t
 		; write_reg_dst	: out		reg_t
+		; mem_data	    : out		word_t
+
+        -- Forwarded data
+        ; forwarded_data_mem : in  word_t
+        ; forwarded_data_wb : in  word_t
+
+        -- Control signals for forwarding
+        ; data_1_forward_mem_en : in std_logic
+        ; data_2_forward_mem_en : in std_logic
+        ; data_1_forward_wb_en : in std_logic
+        ; data_2_forward_wb_en : in std_logic
 		)
 	;
 end execute;
@@ -25,12 +36,80 @@ architecture Behavioral of execute is
 
 	alias immediate			: std_logic_vector(15 downto 0) is instruction(15 downto 0);
 	signal operand_right		  : word_t;
+	signal operand_left		  : word_t;
 	signal immediate_extended : word_t;
 
-begin
-	
 
-	
+begin
+    immediate_extended <= std_logic_vector(resize(signed(immediate), 32));
+    
+    input_and_forwarding_muxes:
+        process
+            ( data_1
+            , data_1_forward_wb_en
+            , data_1_forward_mem_en
+            , forwarded_data_wb
+            , forwarded_data_mem
+            , data_2
+            , data_2_forward_wb_en
+            , data_2_forward_mem_en
+            , imm_to_alu
+            , immediate_extended
+            )
+        begin
+        
+            -------------------------------------
+            --   Forwarding to the left ALU operand
+            -------------------------------------
+            operand_left <= data_1;
+            if data_1_forward_wb_en = '1' then
+                operand_left <= forwarded_data_wb;
+            end if;
+
+            -- Forwarding from ex_mem takes precedence, as it is fresher.
+            if data_1_forward_mem_en = '1' then
+                operand_left <= forwarded_data_mem;
+            end if;
+
+
+            -------------------------------------
+            --   Forwarding to the right ALU operand
+            -------------------------------------
+            operand_right <= data_2;
+
+            if data_2_forward_wb_en = '1' then
+                operand_right <= forwarded_data_wb;
+            end if;
+
+            if data_2_forward_mem_en = '1' then
+                operand_right <= forwarded_data_mem;
+            end if;
+            
+            -- Immediate takes precedence over forwarding.
+            -- Hence it's placement last.
+            if imm_to_alu = '1' then
+              operand_right <= immediate_extended;
+            end if;
+            
+            
+            -------------------------------------
+            --   Forwarding to memory data
+            -------------------------------------      
+            mem_data <= data_2;
+            
+            if data_2_forward_wb_en = '1' then
+                mem_data <= forwarded_data_wb;
+            end if;
+
+            if data_2_forward_mem_en = '1' then
+                mem_data <= forwarded_data_mem;
+            end if;
+            
+        end process;
+ 
+  write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'
+              else  instruction(15 downto 11);
+
 	branch_address_select:
 		entity work.branch_address_select
 		port map
@@ -43,7 +122,7 @@ begin
 	alu:
 		entity work.alu
 		port map
-			( operand_left   => data_1
+			( operand_left   => operand_left
 			, operand_right  => operand_right
 			, operator       => alu_funct
 			, result_is_zero => alu_zero
@@ -52,12 +131,7 @@ begin
 			)
 		;
     
-    immediate_extended <= std_logic_vector(resize(signed(immediate), 32));
-    operand_right <= immediate_extended when imm_to_alu = '1'
-				else	 data_2;
 
-  write_reg_dst <=  instruction(20 downto 16) when inst_type_I = '1'
-              else  instruction(15 downto 11);
 		
 	
 end Behavioral;

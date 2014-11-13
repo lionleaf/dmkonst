@@ -27,6 +27,10 @@ entity instruction_decode is
     ; imm_to_alu : out  std_logic
     ; alu_funct   : out  alu_funct_t
     ; alu_shamt   : out  alu_shamt_t
+
+        -- To forwarding-unit
+        ; rs_out : out reg_t
+        ; rt_out : out reg_t
     )
 	;
 end instruction_decode;
@@ -45,7 +49,12 @@ architecture Behavioral of instruction_decode is
 
 begin
 
-decode_enable_i <= '1' when processor_enable = '1' and insert_stall = '0'
+   -- Output the register numbers used. This is used by the forwarding-unit.
+  rs_out <= rs;
+  rt_out <= rt;
+
+
+  decode_enable_i <= '1' when processor_enable = '1' and insert_stall = '0'
               else '0';
 
    decode:
