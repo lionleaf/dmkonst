@@ -111,9 +111,13 @@ DataMem:			entity work.DualPortMem port map (
 		end WriteInstructionWord;
 
 		procedure FillInstructionMemory is
-			constant TEST_INSTRS : integer := 44;
+			constant TEST_INSTRS : integer := 49;
 			type InstrData is array (0 to TEST_INSTRS-1) of std_logic_vector(DATA_WIDTH-1 downto 0);
 			variable TestInstrData : InstrData := (
+X"00000000", -- nop            -- Empty pipeline.
+X"00000000", -- nop
+X"00000000", -- nop
+X"00000000", -- nop
 X"8c010000", -- lw $1 0($0)    -- Load 1 in to $1 from memory addr 0.
 X"00000000", -- nop            -- Empty pipeline.
 X"00000000", -- nop
@@ -175,7 +179,9 @@ X"ac020009", -- sw $2 9($0)    -- Expect: 5 on addr 9
                                -- Test load nop store:
 X"8c020000", -- lw $2 0($0)    -- Load 1 to $2
 X"00000000", -- nop
-X"ac02000a"  -- sw $2 10($0)
+X"ac02000a",  -- sw $2 10($0)
+X"00000000" -- nop
+
 				);
 		begin
 			for i in 0 to TEST_INSTRS-1 loop
@@ -227,8 +233,8 @@ X"ac02000a"  -- sw $2 10($0)
 			CheckDataWord(x"00000001", 4);
 			CheckDataWord(x"00000001", 5);
 			CheckDataWord(x"00000002", 6);
-			CheckDataWord(x"00060002", 7);
-			CheckDataWord(x"00060005", 8);
+			CheckDataWord(x"00000002", 7);
+			CheckDataWord(x"00000005", 8);
 			CheckDataWord(x"00000005", 9);
 			CheckDataWord(x"00000001", 10);
 		end CheckDataMemory;
