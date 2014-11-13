@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity register_file is
 
-	generic
+  generic
         ( ADDR_WIDTH : integer := 8
         ; DATA_WIDTH : integer := 32
         );

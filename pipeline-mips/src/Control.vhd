@@ -4,9 +4,9 @@ use work.defs.all;
 
 entity Control is
 
-	generic
+    generic
         ( ADDR_WIDTH : integer := 8
-		; DATA_WIDTH : integer := 32
+        ; DATA_WIDTH : integer := 32
         );
     port
         ( clk, reset       : in   std_logic
