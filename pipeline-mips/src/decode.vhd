@@ -45,17 +45,14 @@ begin
      if enable = '1' then
        case opcode is
           when op_add => -- ALU operation (and, or, add, sub, slt, sll)
-              reg_wen <= '1';
-              alu_funct <= instruction_funct;
+              reg_wen    <= '1';
+              alu_funct  <= instruction_funct;
 
           when op_beq => -- beq branch if equal
-              branch_en <= '1';
-              alu_funct <= alu_sub;
+              branch_en   <= '1';
+              alu_funct   <= alu_sub;
               inst_type_I <= '1';
-
---            when "000010" => -- jump
---                reg_dest <= '1';
---                pc_control <= jump;
+              
           when op_lw => -- lw load word
               mem_to_reg  <= '1';
               mem_read    <= '1';

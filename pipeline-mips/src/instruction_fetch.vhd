@@ -9,7 +9,7 @@ entity instruction_fetch is
 			; reset					 	: in	std_logic
 			; processor_enable: in	std_logic
 			; incremented_pc 	: out	addr_t
-			; branch_addr		: in	addr_t
+			; branch_addr		  : in	addr_t
 			; branch_en				: in 	std_logic
 			; insert_stall  	: in 	std_logic
 			; pc							: out	addr_t
@@ -21,22 +21,29 @@ architecture Behavioral of instruction_fetch is
     signal incremented_PC_i : addr_t;
     signal next_PC : addr_t;
 begin
-
+    --Connect internal signals
     PC <= PC_i;
     incremented_PC <= incremented_PC_i;
     
+    
+    -- Calculate the incremented PC (creates an adder)
     incremented_PC_i <= std_logic_vector(resize(unsigned(PC_i) + 1, 8));
     
+    -- Mux on branching
     next_PC <=  branch_addr       when branch_en = '1'
            else incremented_PC_i;
 
+
+    --Update PC every clock
     process (clk)
-    begin
-      
+    begin      
       if rising_edge(clk) then
+        --Synchronous reset
         if reset = '1' then
           PC_i <= (others => '1'); --Will wrap around to 0 when processor enable is set.
-        elsif processor_enable = '1' and insert_stall = '0' then
+       
+       --Update PC as long as we don't stall
+       elsif processor_enable = '1' and insert_stall = '0' then
           PC_i <= next_PC;
         end if;
       end if;

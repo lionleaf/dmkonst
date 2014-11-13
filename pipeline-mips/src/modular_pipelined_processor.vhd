@@ -22,45 +22,42 @@ end processor;
 
 architecture Behavioral of processor is
 
-	-- All signal names follow the following format:
-	--	<name>_<destination>_<in/out>
-	-- example: pc_sourse_if_out is a signal named pc_source that
-	-- is an input from the module instruction-fetch (if).
-	
-	signal incremented_pc_if	:	addr_t;
-	signal incremented_pc_id	:  addr_t;
-	signal incremented_pc_ex	:	addr_t;
-	
-	
-	signal pc_source					:	std_logic;
-		
-  signal instruction_ex		:  std_logic_vector (31 downto 0);
-  signal instruction_id		:  std_logic_vector (31 downto 0);
-	
-	signal data_1_id				:	std_logic_vector (31 downto 0);
-	signal data_2_id				:	std_logic_vector (31 downto 0);
-	signal data_1_ex				:	std_logic_vector (31 downto 0);
-	signal data_2_ex				:	std_logic_vector (31 downto 0);
+  -- All signal names follow the following format:
+  --  <name>_<destination>_<in/out>
+  -- example: pc_sourse_if_out is a signal named pc_source that
+  -- is an input from the module instruction-fetch (if).
   
-  signal alu_source_ex      : std_logic;
+  signal incremented_pc_if  : addr_t;
+  signal incremented_pc_id  :  addr_t;
+  signal incremented_pc_ex  : addr_t;
+  
+--Pass the whole instruction, even though parts might be optimized away if not used.
+  signal instruction_id   :  std_logic_vector (31 downto 0);
+  signal instruction_ex   :  std_logic_vector (31 downto 0);
+
+-- data 1 is the output of registers for the first address, 2 for the second
+  signal data_1_id        : std_logic_vector (31 downto 0);
+  signal data_2_id        : std_logic_vector (31 downto 0);
+  signal data_1_ex        : std_logic_vector (31 downto 0);
+  signal data_2_ex        : std_logic_vector (31 downto 0);
+
+-- 1 if the ALU result is 0
   signal alu_zero_ex        : std_logic;
   signal alu_zero_mem       : std_logic;
+
+-- Output from the ALU
   signal alu_result_ex      : word_t;
   signal alu_result_mem     : word_t;
-  
-  signal branch_addr_ex     : addr_t;
-  signal branch_addr_mem		:	addr_t;
 
+-- Address to branch to
+  signal branch_addr_ex     : addr_t;
+  signal branch_addr_mem    : addr_t;
+
+-- The register to write data back to
   signal write_reg_dst_ex   : reg_t;
   signal write_reg_dst_mem  : reg_t;
   signal write_reg_dst_wb   : reg_t;
-  	
-    
-    
-  
-  -- The memory data that might be written to reg
-  signal mem_data_wb      : word_t;
-  
+
   -- Memory to be written to data memory (during a store)
   signal mem_write_data_ex      : word_t;
   signal mem_write_data_mem      : word_t;
@@ -146,7 +143,7 @@ architecture Behavioral of processor is
   signal reg_wen_wb    : std_logic;
 
 
-	----------------------------------
+  ----------------------------------
   --     HAZARD CONTROL
   ----------------------------------
   
@@ -156,69 +153,70 @@ architecture Behavioral of processor is
   --insert_stall should invalidate instruction in ID by setting it to a nop
   --and freeze the PC register
   signal insert_stall : std_logic;
-
+  
+--alias to section the instruction instead of signals.
   alias reg_rt_ex : reg_t is instruction_ex(20 downto 16);
   alias reg_rd_ex : reg_t is instruction_ex(15 downto 11);
-	
+ 
   alias reg_rs_id : reg_t is instruction_id(25 downto 21);
   alias reg_rt_id : reg_t is instruction_id(20 downto 16);
-	
-	signal instruction_mem_in  : reg_t;
+  
 begin
-	
-	--------------- Instruction Fetch --------------- 
-	
-	instruction_fetch:
-		entity work.instruction_fetch
-		port map
-			( clk							  =>	clk
-			, reset						  => reset
+  ---------------------------------------------------
+  --------------- Instruction Fetch --------------- 
+  ---------------------------------------------------
+  instruction_fetch:
+    entity work.instruction_fetch
+    port map
+      ( clk               =>  clk
+      , reset             => reset
       , processor_enable  => processor_enable
       , insert_stall      => insert_stall
-			, incremented_pc 		=> incremented_pc_if
-			, branch_addr			  => branch_addr_mem
-			, branch_en					=> branch_en_if
+      , incremented_pc    => incremented_pc_if
+      , branch_addr       => branch_addr_mem
+      , branch_en         => branch_en_if
       , pc                => imem_address
-			)
-		;
-		
-		if_to_id_pipe:
-		entity work.if_to_id_pipe
-		port map 
-			( reset               => reset or branch_en_if
-			, clk                 => clk
-			, insert_stall			  => insert_stall
-			, incremented_pc_in   => incremented_pc_if
-			, incremented_pc_out	=> incremented_pc_id
-			, instruction_in	    => imem_data_in
-			, instruction_out	    => instruction_id
-			)
-		;
-		
-	--------------- Instruction Decode --------------- 
+      )
+    ;
     
-	instruction_decode:
-		entity work.instruction_decode
-		port map
-			(	clk				=> clk
-			,	instruction	=>	instruction_id
+    if_to_id_pipe:
+    entity work.if_to_id_pipe
+    port map 
+      ( reset               => reset or branch_en_if
+      , clk                 => clk
+      , insert_stall        => insert_stall
+      , incremented_pc_in   => incremented_pc_if
+      , incremented_pc_out  => incremented_pc_id
+      , instruction_in      => imem_data_in
+      , instruction_out     => instruction_id
+      )
+    ;
+  ---------------------------------------------------
+  --------------- Instruction Decode --------------- 
+  ---------------------------------------------------
+    
+  instruction_decode:
+    entity work.instruction_decode
+    port map
+      ( clk       => clk
+      , instruction =>  instruction_id
       , processor_enable  => processor_enable
 
       -- Write back from wb stage
-      ,	write_data		    =>	write_data_wb
-			,	write_register	  =>	write_reg_dst_wb
+      , write_data        =>  write_data_wb
+      , write_register    =>  write_reg_dst_wb
       , write_reg_enable  =>  reg_wen_wb
 
       -- Out
-			,	data_1			=> data_1_id
-			,	data_2			=> data_2_id
+      , data_1      => data_1_id
+      , data_2      => data_2_id
 
       -- Register numbers used. Used in forwarding-unit.
       , rs_out => rs_id
       , rt_out => rt_id
       
       -- Hazard handling
-			,	insert_stall			=> insert_stall
+      , insert_stall      => insert_stall
       
       -- Control signals out
       , branch_en   => branch_en_id
@@ -230,8 +228,8 @@ begin
       , imm_to_alu  => imm_to_alu_id
       , alu_funct   => alu_funct_id
       , alu_shamt   => alu_shamt_id
-			)
-		;
+      )
+    ;
     
   hazard_detection_unit:
     entity work.hazard_detection
@@ -242,23 +240,23 @@ begin
       , reg_rt_id   => reg_rt_id   
       , insert_stall=> insert_stall
       );
-		
-	id_to_ex_pipe:
-		entity work.id_to_ex_pipe
-		generic map
-			( data_width => data_width
-			)
-		port map
-			( clk               => clk
-			, reset             => reset or branch_en_if
-			, incremented_PC_in => incremented_pc_id
-			, incremented_PC_out=> incremented_pc_ex
-			, data_1_in         => data_1_id
-			, data_1_out        => data_1_ex
-			, data_2_in         => data_2_id
-			, data_2_out        => data_2_ex
-			, instructions_in   => instruction_id
-			, instructions_out  => instruction_ex
+    
+  id_to_ex_pipe:
+    entity work.id_to_ex_pipe
+    generic map
+      ( data_width => data_width
+      )
+    port map
+      ( clk               => clk
+      , reset             => reset or branch_en_if
+      , incremented_PC_in => incremented_pc_id
+      , incremented_PC_out=> incremented_pc_ex
+      , data_1_in         => data_1_id
+      , data_1_out        => data_1_ex
+      , data_2_in         => data_2_id
+      , data_2_out        => data_2_ex
+      , instructions_in   => instruction_id
+      , instructions_out  => instruction_ex
 
       --Control signals
       --For execute
@@ -290,11 +288,11 @@ begin
       , rs_out => rs_ex
       , rt_in  => rt_id
       , rt_out => rt_ex
-			)
-		;
-	
-	--------------- Execution ---------------	
-	
+      )
+    ;
+  ---------------------------------------------------
+  --------------- Execution --------------- 
+  ---------------------------------------------------
     forwarding_unit:
         entity work.forwarding_unit
         port map
@@ -311,21 +309,21 @@ begin
             , data_1_forward_wb_en => data_1_forward_wb_en
             , data_2_forward_wb_en => data_2_forward_wb_en
             ) ;
-	
-	execute:
-		entity work.execute
-		port map
-			(  incremented_pc	=> incremented_pc_ex
-			, data_1				=> data_1_ex
-			, data_2				=> data_2_ex
-			, instruction		=> instruction_ex
-			, inst_type_I		=> inst_type_I_ex
-			, imm_to_alu		=> imm_to_alu_ex
-			, alu_funct	    => alu_funct_ex
-			, alu_shamt	    => alu_shamt_ex
-			, alu_result		=> alu_result_ex
-			, alu_zero			=> alu_zero_ex
-			, branch_address	=> branch_addr_ex
+  
+  execute:
+    entity work.execute
+    port map
+      (  incremented_pc => incremented_pc_ex
+      , data_1        => data_1_ex
+      , data_2        => data_2_ex
+      , instruction   => instruction_ex
+      , inst_type_I   => inst_type_I_ex
+      , imm_to_alu    => imm_to_alu_ex
+      , alu_funct     => alu_funct_ex
+      , alu_shamt     => alu_shamt_ex
+      , alu_result    => alu_result_ex
+      , alu_zero      => alu_zero_ex
+      , branch_address  => branch_addr_ex
       , write_reg_dst => write_reg_dst_ex
       , mem_data      => mem_write_data_ex
 
@@ -338,26 +336,26 @@ begin
             , data_2_forward_mem_en => data_2_forward_mem_en
             , data_1_forward_wb_en => data_1_forward_wb_en
             , data_2_forward_wb_en => data_2_forward_wb_en
-			)
-		;
+      )
+    ;
 
 
   
-	ex_to_mem_pipe:
-		entity work.ex_to_mem_pipe
-		port map
-			( clk               => clk
-			, reset             => reset or branch_en_if
-			, branch_addr_in    => branch_addr_ex
-			, branch_addr_out    => branch_addr_mem
-			, zero_in           => alu_zero_ex
-			, zero_out          => alu_zero_mem
-			, alu_result_in     => alu_result_ex
-			, alu_result_out    => alu_result_mem
-			, mem_write_data_in => mem_write_data_ex
-			, mem_write_data_out=> mem_write_data_mem
-			, write_reg_dst_in   => write_reg_dst_ex
-			, write_reg_dst_out  => write_reg_dst_mem
+  ex_to_mem_pipe:
+    entity work.ex_to_mem_pipe
+    port map
+      ( clk               => clk
+      , reset             => reset or branch_en_if
+      , branch_addr_in    => branch_addr_ex
+      , branch_addr_out    => branch_addr_mem
+      , zero_in           => alu_zero_ex
+      , zero_out          => alu_zero_mem
+      , alu_result_in     => alu_result_ex
+      , alu_result_out    => alu_result_mem
+      , mem_write_data_in => mem_write_data_ex
+      , mem_write_data_out=> mem_write_data_mem
+      , write_reg_dst_in   => write_reg_dst_ex
+      , write_reg_dst_out  => write_reg_dst_mem
 
       --Control signals
       --For mem
@@ -372,26 +370,29 @@ begin
       , reg_wen_in        => reg_wen_ex
       , reg_wen_out       => reg_wen_mem
 
-			)
-		;
-		
-	--------------- Memory ---------------
-
+      )
+    ;
+  ---------------------------------------------------
+  --------------- Memory ---------------
+  ---------------------------------------------------
+  
+  -- Branch if the branch control signal is set and the alu result is 0
   branch_en_if <= branch_en_mem and alu_zero_mem;
   
+  --Send signals to the memory
   dmem_write_enable <= mem_wen_mem;
   dmem_address <= alu_result_mem(7 downto 0);
   dmem_data_out <= mem_write_data_mem;
   
-	mem_to_wb_pipe:
-		entity work.mem_to_wb_pipe
-		port map
-			(  clk              => clk
-			,  reset            => reset
-			,  alu_result_in    => alu_result_mem
-			,  alu_result_out   => alu_result_wb
-			,  write_reg_dst_in  => write_reg_dst_mem
-			,  write_reg_dst_out => write_reg_dst_wb
+  mem_to_wb_pipe:
+    entity work.mem_to_wb_pipe
+    port map
+      (  clk              => clk
+      ,  reset            => reset
+      ,  alu_result_in    => alu_result_mem
+      ,  alu_result_out   => alu_result_wb
+      ,  write_reg_dst_in  => write_reg_dst_mem
+      ,  write_reg_dst_out => write_reg_dst_wb
 
       --Control signals
       --For writeback
@@ -399,14 +400,15 @@ begin
       , mem_to_reg_out    => mem_to_reg_wb
       , reg_wen_in        => reg_wen_mem
       , reg_wen_out       => reg_wen_wb
-			)
-		;
-		
-	--------------- Write Back ---------------
+      )
+    ;
+  ---------------------------------------------------
+  --------------- Write Back ----------------------
+  ---------------------------------------------------
   
   --dmem_data_in is already delayed a cycle, so no need to send it through the pipe
-	write_data_wb <= dmem_data_in when mem_to_reg_wb = '1'
-			        else alu_result_wb;
+  write_data_wb <= dmem_data_in when mem_to_reg_wb = '1'
+              else alu_result_wb;
   
-	
+  
 end Behavioral;

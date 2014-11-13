@@ -22,14 +22,18 @@ entity register_file is
 end register_file;
 
 architecture Behavioral of register_file is
-
     subtype register_t is std_logic_vector(DATA_WIDTH - 1 downto 0);
     type regfile_t is array (integer range <>) of register_t;
+    
+    
+    -- Register file
     signal regfile : regfile_t(0 to 31);
-    constant regfile_reset : regfile_t(0 to 31) := (others => (others => '0'));
-
+    
 begin
 
+--------------------------------------------------
+------------   READ PORT 1 -----------------------
+--------------------------------------------------
     process (clk, regfile, read_reg_1)
     begin
         if read_reg_1 = "00000"  then
@@ -39,7 +43,9 @@ begin
         end if;
     end process;
     
-    
+--------------------------------------------------
+------------ READ PORT 2 -------------------------
+--------------------------------------------------
     process (clk, regfile, read_reg_2)
     begin
         if read_reg_2 = "00000" then
@@ -49,7 +55,9 @@ begin
         end if;
     end process;
     
-
+--------------------------------------------------
+------------   WRITE -----------------------------
+--------------------------------------------------
     process (clk)
     begin
         if rising_edge(clk) then

@@ -21,7 +21,9 @@ architecture Behavioral of if_to_id_pipe is
   signal insert_stall_i    : std_logic; --Internal sync. signal that is updated only on clock up
   signal reset_i           : std_logic; --Internal sync. signal that is updated only on clock up
 begin
-  instruction_out  <= last_instruction when insert_stall_i = '1'
+
+    --This mux handles stalling
+    instruction_out  <= last_instruction when insert_stall_i = '1'
                  else (others => '0')  when reset_i = '1'
                  else instruction_in;
   

@@ -3,7 +3,7 @@
 -- Department of Computer and Information Science
 -- Norwegian University of Science and Technology
 
--- tb_MIPSProcessor.vhd
+-- tb_hazard_detection.vhd
 -- Testbench for the MIPSProcessor component
 -- Instantiates data and instruction memory, fills them with some
 -- test data, enables the processor, then checks the data memory
@@ -13,10 +13,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
  
-ENTITY tb_MIPSProcessor IS
-END tb_MIPSProcessor;
+ENTITY tb_hazard_detection IS
+END tb_hazard_detection;
  
-ARCHITECTURE behavior OF tb_MIPSProcessor IS
+ARCHITECTURE behavior OF tb_hazard_detection IS
 	constant ADDR_WIDTH : integer := 8;
 	constant DATA_WIDTH : integer := 32;
 	
@@ -111,43 +111,32 @@ DataMem:			entity work.DualPortMem port map (
 		end WriteInstructionWord;
 		
 		procedure FillInstructionMemory is
-			constant TEST_INSTRS : integer := 34;
+			constant TEST_INSTRS : integer := 19;
 			type InstrData is array (0 to TEST_INSTRS-1) of std_logic_vector(DATA_WIDTH-1 downto 0);
 			variable TestInstrData : InstrData := (
-				X"00000000", 
-				X"00000000", 
-				X"00000000", 
-				X"8C010001", --lw $1, 1($0)		/$1 =  2	
-				X"8C020002", --lw $2, 2($0)		/$2 = 10	
-				X"00221820", --add $3, $1, $2	   /$3 = 12		
-				X"AC030005", --sw $3, 5($0)		/Saving value 12 on address 5	
-				X"10000002", --beq $0, $0, 2		/Jumping to adress +2 = 8	
-				X"AC030003", --sw $3, 3($0)      /SKIPPED (Saving value 12 on address 3)			
-				X"AC030004", --sw $3, 4($0)		/SKIPPED	(Saving value 12 on address 4)
-				X"AC030006", --sw $3, 6($0)		/Saving value 12 on address 6	
-				X"AC030007", --sw $3, 7($0)		/Saving value 12 on address 7	
-				X"3C030006", --lui $3, 6			/$3 = 6 * 2^16 = 393216 = 0x60000
-				X"AC030008", --sw $3, 8($0)		/Saving value 0x60000 on address 8	
-				X"00231820", --add $3, $1, $3		/$3 = 393218 = 0x60002	
-				X"AC030009", --sw $3, 9($0)		/Saving 0x60002 on address 9	
-				X"10400002", --beq $2, $0, 2		/No branch	
-				X"0001982A", --slt $19, $0, $1	/$19 = 1		
-				X"AC13000C", --sw $19, 12($0)		/Saving 1 on address 12	
-				X"08000013", --j 19					/jump to 19
-				X"AC030001", --sw $3, 1($0)		/SKIPPED (Saving 0x60002 on address 1)	
-				X"1000FFFD", --beq $0, $0, -3		/SKIPPED (Branch back three steps)	
-				X"00622022", --sub $4, $3, $2		/$4 = 0x5FFF8 	
-				X"00822022", --sub $4, $4, $2		/$4 = 0x5FFEE
-				X"AC04000D", --sw $4, 13($0)		/Saving value 0x5FFEE on address 13 	
-				X"00221820", --add $3, $1, $2		/$3 = 12	
-				X"00432024", --and $4, $2, $3		/$4 = 1000 = 8	
-				X"00432825", --or $5, $2, $3		/$5 = 1110 = 14	
-				X"AC04000F", --sw $4, 15($0)		/Saving value 8 on address 15	
-				X"AC050010", --sw $5, 16($0)		/Saving value 14 (= 0xE) on address 16	
-				X"002A5020", --add $10, $1, $10  /add $1 to $ 10 and place in $10
-				X"1000FFFF", --beq $0, $0, -1	/Branch back one step to hold off code at this spot
-				X"AC050012", --sw $5, 18($0)		/SHOULD NEVER HAPPEN (Saving value 14 (= 0xE) on address 18.)
-				X"00000000" --nop
+              X"8c040002", --lw $4 2($0)  /$4 = 5
+              X"00000000", --noop
+              X"00000000", --noop
+              X"00000000", --noop
+              X"00000000", --noop
+              
+              --- TEST 1 lw then add----
+              X"00800820", --add $1 $4 $0  /$1 = 5
+              X"00000000", --noop
+              X"00000000", --noop
+              X"8c010001", --lw $1 1($0)   /$1 = 10
+              X"00201020", --add $2 $1 $0  /$2 = 10 or 5 if hazard detection did not work
+              X"00000000", --noop
+              X"00000000", --noop
+              X"00000000", --noop
+              X"ac02000a", --sw $2 10($0)  / Store 10 to 10   (stores 5 if the unit fails)
+              
+              ----TEST 2------
+              X"00800820", --add $1 $4 $0
+              X"00000000", --noop
+              X"00000000", --noop
+              X"8c010001", --lw $1 1($0)
+              X"ac01000b"  --sw $1 11($0)   / Store 10 to 11   (stores 5 if the unit fails)
 				);
 		begin
 			for i in 0 to TEST_INSTRS-1 loop
@@ -169,8 +158,8 @@ DataMem:			entity work.DualPortMem port map (
 		
 		procedure FillDataMemory is
 		begin
-			WriteDataWord(x"00000002", 1);
-			WriteDataWord(x"0000000A", 2);
+			WriteDataWord(x"00000005", 2);
+			WriteDataWord(x"0000000A", 1);
 		end FillDataMemory;
 		
 		-- helper procedures for checking the contents of data memory after
@@ -197,15 +186,8 @@ DataMem:			entity work.DualPortMem port map (
 		begin
 			wait until processor_enable = '0';
 			-- expected data memory contents, derived from program behavior
-			CheckDataWord(x"0000000C", 5);
-			CheckDataWord(x"0000000C", 6);
-			CheckDataWord(x"0000000C", 7);
-			CheckDataWord(x"00060000", 8);
-			CheckDataWord(x"00060002", 9);
-			CheckDataWord(x"00000001", 12);
-			CheckDataWord(x"0005FFEE", 13);
-			CheckDataWord(x"00000008", 15);
-			CheckDataWord(x"0000000E", 16);
+			CheckDataWord(x"0000000A", 10);
+			CheckDataWord(x"0000000A", 11);
 		end CheckDataMemory;
 		
    begin

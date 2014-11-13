@@ -28,9 +28,9 @@ entity instruction_decode is
     ; alu_funct   : out  alu_funct_t
     ; alu_shamt   : out  alu_shamt_t
 
-        -- To forwarding-unit
-        ; rs_out : out reg_t
-        ; rt_out : out reg_t
+    -- To forwarding-unit
+    ; rs_out : out reg_t
+    ; rt_out : out reg_t
     )
 	;
 end instruction_decode;
@@ -64,9 +64,9 @@ begin
             , instruction => instruction
             , branch_en   => branch_en
             , mem_to_reg  => mem_to_reg   
-            , mem_wen     => mem_wen  --Internal signal for stalling purposes
-            , mem_read    => mem_read --Internal signal for stalling purposes
-            , reg_wen     => reg_wen  --Internal signal for stalling purposes
+            , mem_wen     => mem_wen
+            , mem_read    => mem_read 
+            , reg_wen     => reg_wen
             , imm_to_alu  => imm_to_alu
             , inst_type_I => inst_type_I
             , alu_funct   => alu_funct
