@@ -24,8 +24,10 @@ Here we had to design the RTL ourselves.
 Given a subset of the MIPS instruction set and the requirement that it had to be a a multi-cycle implementation (no pipelining) we designed and implemented this processor. It was inspired by the processor detailed in Computer Organization and Design [Patterson and Hennessy]. 
 The resulting implementation was succesfully tested on a Spartan-6 FPGA.
 We spent a lot of effort on optimizing the design and VHDL to get the highest possible performance, and we had among the fastest processors.
+
 This exercise counted 25% of our grade.
 
+[https://github.com/lionleaf/dmkonst/blob/master/multi-cycle-mips-report.pdf?raw=true](Direct link to the report.)
 
 3. A pipelined MIPS processor with optimizations (pipeline-mips)
 ----------
@@ -34,3 +36,5 @@ This processor was also successfully tested on a Spartan-6 FPGA.
 We spent quite some time playing with the VHDL language to try to implement the pipeline registers as clean as possible, which can be seen in various branches of this repository.
 
 This exercise also accounted for 25% of our grade.
+
+[https://github.com/lionleaf/dmkonst/blob/master/pipeline-mips-report.pdf?raw=true](Direct link to the report.)
