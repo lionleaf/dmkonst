@@ -27,7 +27,7 @@ We spent a lot of effort on optimizing the design and VHDL to get the highest po
 
 This exercise counted 25% of our grade.
 
-[https://github.com/lionleaf/dmkonst/blob/master/multi-cycle-mips-report.pdf?raw=true](Direct link to the report.)
+[Direct link to the report.](https://github.com/lionleaf/dmkonst/blob/master/multi-cycle-mips-report.pdf?raw=true)
 
 3. A pipelined MIPS processor with optimizations (pipeline-mips)
 ----------
@@ -37,4 +37,4 @@ We spent quite some time playing with the VHDL language to try to implement the 
 
 This exercise also accounted for 25% of our grade.
 
-[https://github.com/lionleaf/dmkonst/blob/master/pipeline-mips-report.pdf?raw=true](Direct link to the report.)
+[Direct link to the report.](https://github.com/lionleaf/dmkonst/blob/master/pipeline-mips-report.pdf?raw=true)
