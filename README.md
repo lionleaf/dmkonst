@@ -7,7 +7,7 @@ Note: During this semester both Aleksander and Andreas was also part of the ambi
 The exercise was split in four parts:
 
 0. Tutorial
-----------
+=============
 The result of following a tutorial step by step to introduce VHDL and the toolchain, which was a good thing, as most of us had never touch a hardware definition language.
 
 1. A simple stack machine   (stack-machine)
